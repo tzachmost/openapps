@@ -1,0 +1,47 @@
+name: Deploy SvelteKit site
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+  schedule:
+    - cron: '30 5 * * *'   # 07:30 CEST (summer, UTC+2)
+    - cron: '30 6 * * *'   # 07:30 CET (winter, UTC+1)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip if not 07:30 Europe/Warsaw
+        if: github.event_name == 'schedule'
+        run: |
+          now=$(TZ='Europe/Warsaw' date +%H:%M)
+          if [ "$now" != "07:30" ]; then
+            echo "Not 07:30 local time ($now), skipping."
+            exit 78
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build   # outputs static site to ./build via adapter-static
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
