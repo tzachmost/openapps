@@ -60,7 +60,17 @@
 		await Promise.all(Array.from({ length: Math.min(limit, list.length) }, worker));
 	}
 
-	async function processItem(item: ImageItem) {
+	// Look the item back up by id rather than mutating the reference passed in: objects
+	// read from `items` are Svelte's reactive proxies, but a reference captured before the
+	// array was assigned to `items` (as `newItems` is, on first add) is the plain pre-proxy
+	// object — mutating that silently does nothing to the UI.
+	function findItem(id: string): ImageItem | undefined {
+		return items.find((entry) => entry.id === id);
+	}
+
+	async function processItem(id: string) {
+		const item = findItem(id);
+		if (!item) return;
 		item.status = 'processing';
 		try {
 			const result = await compressImage(item.file, {
@@ -68,18 +78,23 @@
 				quality,
 				maxDimension: maxDimension || null
 			});
-			if (item.outputUrl) URL.revokeObjectURL(item.outputUrl);
-			const mimeType = resolveFormat(item.file.type, format);
-			const baseName = item.file.name.replace(/\.[^.]+$/, '');
-			item.outputUrl = result.url;
-			item.outputSize = result.blob.size;
-			item.outputName = `${baseName}-squished.${extensionFor(mimeType)}`;
-			item.width = result.width;
-			item.height = result.height;
-			item.status = 'done';
+			const current = findItem(id);
+			if (!current) return;
+			if (current.outputUrl) URL.revokeObjectURL(current.outputUrl);
+			const mimeType = resolveFormat(current.file.type, format);
+			const baseName = current.file.name.replace(/\.[^.]+$/, '');
+			current.outputUrl = result.url;
+			current.outputSize = result.blob.size;
+			current.outputName = `${baseName}-squished.${extensionFor(mimeType)}`;
+			current.width = result.width;
+			current.height = result.height;
+			current.status = 'done';
 		} catch (error) {
-			item.status = 'error';
-			item.errorMessage = error instanceof Error ? error.message : 'Could not process this image.';
+			const current = findItem(id);
+			if (!current) return;
+			current.status = 'error';
+			current.errorMessage =
+				error instanceof Error ? error.message : 'Could not process this image.';
 		}
 	}
 
@@ -93,13 +108,22 @@
 			status: 'processing'
 		}));
 		items = [...items, ...newItems];
-		runWithLimit(newItems, 3, processItem);
+		runWithLimit(
+			newItems.map((item) => item.id),
+			3,
+			processItem
+		);
 	}
 
 	function scheduleReprocess() {
 		if (reprocessTimer) clearTimeout(reprocessTimer);
 		reprocessTimer = setTimeout(() => {
-			if (items.length > 0) runWithLimit(items, 3, processItem);
+			if (items.length > 0)
+				runWithLimit(
+					items.map((item) => item.id),
+					3,
+					processItem
+				);
 		}, 250);
 	}
 
