@@ -4,8 +4,8 @@ on:
     branches: [main]
   workflow_dispatch: {}
   schedule:
-    - cron: '30 5 * * *'   # 07:30 CEST (summer, UTC+2)
-    - cron: '30 6 * * *'   # 07:30 CET (winter, UTC+1)
+    - cron: '30 5 * * *' # 07:30 CEST (summer, UTC+2)
+    - cron: '30 6 * * *' # 07:30 CET (winter, UTC+1)
 permissions:
   contents: read
   pages: write
@@ -31,7 +31,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build   # outputs static site to ./build via adapter-static
+      - run: npm run build # outputs static site to ./build via adapter-static
+        env:
+          BASE_PATH: /openapps
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

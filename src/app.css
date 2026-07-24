@@ -1,0 +1,84 @@
+:root {
+	--bg: #faf8f4;
+	--bg-elevated: #ffffff;
+	--text: #17150f;
+	--text-dim: #6b6659;
+	--accent: #dd4b1f;
+	--accent-text: #fff8f2;
+	--border: rgba(23, 21, 15, 0.1);
+	--border-strong: rgba(23, 21, 15, 0.18);
+	--shadow: 0 1px 2px rgba(23, 21, 15, 0.04), 0 12px 32px -16px rgba(23, 21, 15, 0.16);
+
+	--font-sans:
+		ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0c0b0a;
+		--bg-elevated: #171512;
+		--text: #f4f1ea;
+		--text-dim: #9c968a;
+		--accent: #ff6a3d;
+		--accent-text: #1a0d06;
+		--border: rgba(244, 241, 234, 0.1);
+		--border-strong: rgba(244, 241, 234, 0.18);
+		--shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+
+		color-scheme: dark;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+}
+
+button {
+	font-family: inherit;
+}
+
+::selection {
+	background: var(--accent);
+	color: var(--accent-text);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}

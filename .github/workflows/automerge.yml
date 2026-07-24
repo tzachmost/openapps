@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-check:
-    if: startsWith(github.head_ref, 'claude/')   # only auto-merge Claude's branches
+    if: startsWith(github.head_ref, 'claude/') # only auto-merge Claude's branches
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build   # this is the gate — merge only happens if it succeeds
+      - run: npm run build # this is the gate — merge only happens if it succeeds
 
   automerge:
     needs: build-check
