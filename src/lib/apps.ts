@@ -21,5 +21,19 @@ export const apps: AppMeta[] = [
 			<path d="M4 21.5 11 14.5 16.5 20 21 15.5 28 22.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 			<circle cx="11.5" cy="11.5" r="2.25" stroke="currentColor" stroke-width="2"/>
 		</svg>`
+	},
+	{
+		slug: 'bare',
+		name: 'Bare',
+		tagline: 'See what a photo reveals, then strip it out.',
+		description:
+			'Every JPEG carries hidden metadata — camera model, timestamps, sometimes an exact GPS location. Bare shows you what is embedded, then removes it byte-for-byte with no re-encoding and no quality loss.',
+		tag: 'Privacy',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M16 9.5c-2.6 0-4.6 2-4.6 4.5 0 3 4.6 8 4.6 8s4.6-5 4.6-8c0-2.5-2-4.5-4.6-4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+			<circle cx="16" cy="14" r="1.4" fill="currentColor"/>
+			<path d="M7 25 25 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+		</svg>`
 	}
 ];
