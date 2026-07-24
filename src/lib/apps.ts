@@ -35,5 +35,19 @@ export const apps: AppMeta[] = [
 			<circle cx="16" cy="14" r="1.4" fill="currentColor"/>
 			<path d="M7 25 25 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 		</svg>`
+	},
+	{
+		slug: 'swatch',
+		name: 'Swatch',
+		tagline: 'Pull a color palette out of any image.',
+		description:
+			'Drop in a photo and Swatch reads its dominant colors straight off the pixels using median-cut quantization — hex, RGB, and HSL, one click to copy, no AI involved.',
+		tag: 'Design',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M20.5 9.5 22.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			<path d="M19 11 12 18v3h3l7-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+			<circle cx="11.5" cy="22.5" r="1.5" fill="currentColor"/>
+		</svg>`
 	}
 ];
