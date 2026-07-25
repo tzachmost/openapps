@@ -49,5 +49,18 @@ export const apps: AppMeta[] = [
 			<path d="M19 11 12 18v3h3l7-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 			<circle cx="11.5" cy="22.5" r="1.5" fill="currentColor"/>
 		</svg>`
+	},
+	{
+		slug: 'sift',
+		name: 'Sift',
+		tagline: 'Format, validate, and diff JSON.',
+		description:
+			'Paste JSON to pretty-print, validate, and explore it as a collapsible tree with precise error locations — or switch to Diff to compare two versions structurally, key by key. No server round-trip.',
+		tag: 'Dev',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M13 9c-1.8 0-2.6.9-2.6 2.6v2c0 1-.4 1.4-1.4 1.4.9 0 1.4.4 1.4 1.4v2c0 1.7.8 2.6 2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M19 9c1.8 0 2.6.9 2.6 2.6v2c0 1 .4 1.4 1.4 1.4-.9 0-1.4.4-1.4 1.4v2c0 1.7-.8 2.6-2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
