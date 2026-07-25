@@ -8,6 +8,7 @@ A small, growing collection of tools that run entirely in your browser — no ac
 - **[Bare](src/routes/apps/bare)** — see and strip a JPEG's hidden EXIF/GPS metadata, no re-encoding.
 - **[Swatch](src/routes/apps/swatch)** — pull a color palette out of any image via median-cut quantization.
 - **[Sift](src/routes/apps/sift)** — format, validate, and diff JSON as a collapsible tree.
+- **[Mat](src/routes/apps/mat)** — mount a screenshot on a background with padding, corners, and a shadow.
 
 ## Developing
 
