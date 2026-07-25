@@ -2,6 +2,15 @@ name: Deploy SvelteKit site
 on:
   push:
     branches: [main]
+  # A squash-merge pushed by automerge.yml runs as GITHUB_TOKEN, and GitHub
+  # deliberately does not raise `push` events for those — otherwise a workflow
+  # could trigger itself forever. So the `push` trigger above never fires for an
+  # auto-merged PR, and without this the site only caught up on the daily
+  # schedule below. `workflow_run` is raised by the workflow *completing*, not by
+  # its push, so it is not suppressed.
+  workflow_run:
+    workflows: ['Auto-merge Claude PRs']
+    types: [completed]
   workflow_dispatch: {}
   schedule:
     - cron: '30 5 * * *' # 07:30 CEST (summer, UTC+2)
@@ -15,6 +24,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
+    # workflow_run fires whether the upstream run passed or failed, and only a
+    # successful auto-merge actually changed main.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Skip if not 07:30 Europe/Warsaw
@@ -26,6 +38,11 @@ jobs:
             exit 78
           fi
       - uses: actions/checkout@v4
+        with:
+          # Pinned rather than left to default: on a workflow_run event the
+          # default ref is the *triggering* run's head SHA — the PR branch, which
+          # automerge has already deleted — not the merge commit we want to ship.
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 20
