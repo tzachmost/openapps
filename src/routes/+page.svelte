@@ -1,6 +1,7 @@
 <script lang="ts">
 	import AppCard from '$lib/components/AppCard.svelte';
 	import { apps } from '$lib/apps';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -25,7 +26,9 @@
 	{/each}
 </section>
 
-<p class="more">More tools, slowly.</p>
+<p class="more">
+	More tools, slowly. Occasionally, <a href={resolve('/writing')}>some writing</a>.
+</p>
 
 <style>
 	.hero {
@@ -63,5 +66,15 @@
 		text-align: center;
 		font-size: 0.85rem;
 		color: var(--text-dim);
+	}
+
+	.more a {
+		color: var(--text-dim);
+		text-decoration-color: var(--accent);
+		text-underline-offset: 3px;
+	}
+
+	.more a:hover {
+		color: var(--text);
 	}
 </style>

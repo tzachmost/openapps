@@ -17,9 +17,17 @@
 		<a class="wordmark" href={resolve('/')}>
 			<span>open apps</span><span class="dot">.</span>
 		</a>
-		<a class="source" href="https://github.com/tzachmost/openapps" target="_blank" rel="noreferrer">
-			source
-		</a>
+		<nav>
+			<a class="nav-link" href={resolve('/writing')}>writing</a>
+			<a
+				class="nav-link"
+				href="https://github.com/tzachmost/openapps"
+				target="_blank"
+				rel="noreferrer"
+			>
+				source
+			</a>
+		</nav>
 	</header>
 
 	<main>
@@ -57,7 +65,13 @@
 		color: var(--accent);
 	}
 
-	.source {
+	nav {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.nav-link {
 		text-decoration: none;
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
@@ -70,7 +84,7 @@
 			border-color 0.15s ease;
 	}
 
-	.source:hover {
+	.nav-link:hover {
 		color: var(--text);
 		border-color: var(--border-strong);
 	}
