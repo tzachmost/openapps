@@ -51,6 +51,18 @@ export const apps: AppMeta[] = [
 		</svg>`
 	},
 	{
+		slug: 'mat',
+		name: 'Mat',
+		tagline: 'Give a screenshot room to breathe.',
+		description:
+			'Mount a screenshot on a background with padding, rounded corners, and a soft shadow — or let Mat build a gradient out of the image’s own colors. Renders to PNG on your device.',
+		tag: 'Design',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<rect x="10" y="10" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/>
+		</svg>`
+	},
+	{
 		slug: 'sift',
 		name: 'Sift',
 		tagline: 'Format, validate, and diff JSON.',
