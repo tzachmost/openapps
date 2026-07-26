@@ -74,5 +74,19 @@ export const apps: AppMeta[] = [
 			<path d="M13 9c-1.8 0-2.6.9-2.6 2.6v2c0 1-.4 1.4-1.4 1.4.9 0 1.4.4 1.4 1.4v2c0 1.7.8 2.6 2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M19 9c1.8 0 2.6.9 2.6 2.6v2c0 1 .4 1.4 1.4 1.4-.9 0-1.4.4-1.4 1.4v2c0 1.7-.8 2.6-2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
+	},
+	{
+		slug: 'folio',
+		name: 'Folio',
+		tagline: 'Markdown, typeset.',
+		description:
+			'Write Markdown on one side and watch it typeset live on the other, then export a self-contained HTML file or print straight to PDF. Parsed entirely on your device, no dependency.',
+		tag: 'Docs',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M12 9h6l3 3v11a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			<path d="M18 9v3h3" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			<path d="M13.5 16h5M13.5 19h5M13.5 22h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+		</svg>`
 	}
 ];
