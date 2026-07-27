@@ -2,11 +2,11 @@
 	import { base } from '$app/paths';
 	import type { AppMeta } from '$lib/apps';
 
-	let { app }: { app: AppMeta } = $props();
+	let { app, wide = false }: { app: AppMeta; wide?: boolean } = $props();
 </script>
 
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- built from the apps manifest, not a static route literal -->
-<a class="card" href="{base}/apps/{app.slug}">
+<a class="card" class:wide href="{base}/apps/{app.slug}">
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- app.icon is authored in-repo, not user input -->
 	<div class="icon" aria-hidden="true">{@html app.icon}</div>
 	<div class="body">
@@ -14,17 +14,17 @@
 			<h3>{app.name}</h3>
 			<span class="tag">{app.tag}</span>
 		</div>
-		<p>{app.tagline}</p>
+		<p>{wide ? app.description : app.tagline}</p>
 	</div>
 	<span class="arrow" aria-hidden="true">→</span>
 </a>
 
 <style>
 	.card {
-		position: relative;
 		display: flex;
+		flex-direction: column;
 		align-items: flex-start;
-		gap: 1rem;
+		gap: 0.9rem;
 		padding: 1.5rem;
 		background: var(--bg-elevated);
 		border: 1px solid var(--border);
@@ -35,6 +35,13 @@
 		transition:
 			transform 0.18s ease,
 			border-color 0.18s ease;
+	}
+
+	.card.wide {
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 1.1rem;
+		padding: 1.75rem;
 	}
 
 	.card:hover {
@@ -57,9 +64,19 @@
 		color: var(--accent);
 	}
 
+	.card.wide .icon {
+		width: 3.25rem;
+		height: 3.25rem;
+	}
+
 	.icon :global(svg) {
 		width: 1.5rem;
 		height: 1.5rem;
+	}
+
+	.card.wide .icon :global(svg) {
+		width: 1.75rem;
+		height: 1.75rem;
 	}
 
 	.body {
@@ -79,6 +96,10 @@
 		letter-spacing: -0.01em;
 	}
 
+	.card.wide h3 {
+		font-size: 1.25rem;
+	}
+
 	.tag {
 		font-family: var(--font-mono);
 		font-size: 0.7rem;
@@ -88,14 +109,23 @@
 	}
 
 	p {
-		margin-top: 0.4rem;
+		margin: 0;
 		font-size: 0.9rem;
 		line-height: 1.5;
 		color: var(--text-dim);
 	}
 
+	.card.wide p {
+		font-size: 0.95rem;
+		max-width: 34rem;
+	}
+
 	.arrow {
 		color: var(--text-dim);
 		transition: transform 0.18s ease;
+	}
+
+	.card:not(.wide) .arrow {
+		margin-top: auto;
 	}
 </style>
