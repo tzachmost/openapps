@@ -152,6 +152,19 @@ export const apps: AppMeta[] = [
 		</svg>`
 	},
 	{
+		slug: 'seal',
+		name: 'Seal',
+		tagline: 'Checksum a file or a string, and verify it.',
+		description:
+			'Compute MD5, SHA-1, SHA-256, SHA-384, and SHA-512 for pasted text or dropped files, check the result against a hash you were given, and spot exact duplicates across a batch — a hand-rolled MD5 alongside the browser’s own SubtleCrypto, all on your device.',
+		tag: 'Security',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M13 8.5 11 23.5M21 8.5 19 23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			<path d="M9 13.5h15.5M8.5 19.5H24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+		</svg>`
+	},
+	{
 		slug: 'bloom',
 		name: 'Bloom',
 		tagline: 'Drag a few orbs into a soft gradient.',
