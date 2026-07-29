@@ -203,5 +203,18 @@ export const apps: AppMeta[] = [
 			<circle cx="8" cy="23" r="1.7" fill="currentColor"/>
 			<circle cx="24" cy="10" r="1.7" fill="currentColor"/>
 		</svg>`
+	},
+	{
+		slug: 'claim',
+		name: 'Claim',
+		tagline: 'Decode a JWT, read its claims, verify it.',
+		description:
+			'Paste a token to see its header and claims decoded, a plain-language expiry status, and a signature check against a secret or public key via the browser’s own Web Crypto — or switch to Encode to build and sign a fresh HS256/384/512 token. Nothing leaves your device.',
+		tag: 'Dev',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<circle cx="13" cy="13" r="3.2" stroke="currentColor" stroke-width="1.8"/>
+			<path d="M15.5 15.5 23 23M19.3 19.3l2.1 2.1M22 16.6l2.1 2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
