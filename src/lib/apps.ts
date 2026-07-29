@@ -177,5 +177,17 @@ export const apps: AppMeta[] = [
 			<circle cx="20.5" cy="15" r="3.6" stroke="currentColor" stroke-width="1.8"/>
 			<circle cx="15.5" cy="20.5" r="3.6" stroke="currentColor" stroke-width="1.8"/>
 		</svg>`
+	},
+	{
+		slug: 'splice',
+		name: 'Splice',
+		tagline: 'Trim and fade an audio clip on the waveform.',
+		description:
+			'Drop in a clip and drag across the waveform to pick a range, fade either edge, nudge the level, then export a clean WAV. Decoded, rendered, and previewed entirely in your browser — nothing is ever uploaded.',
+		tag: 'Audio',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M8 14v4M12 10.5v11M16 8v16M20 10.5v11M24 14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+		</svg>`
 	}
 ];
