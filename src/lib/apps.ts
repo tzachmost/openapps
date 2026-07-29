@@ -76,6 +76,27 @@ export const apps: AppMeta[] = [
 		</svg>`
 	},
 	{
+		slug: 'beacon',
+		name: 'Beacon',
+		tagline: 'Turn text into a QR code, no server involved.',
+		description:
+			'Type a URL or any text and Beacon builds a scannable QR code for it — a hand-rolled encoder with real Reed–Solomon error correction, pick your error-correction level and colors, then export PNG or SVG.',
+		tag: 'Share',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
+			<rect x="18" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
+			<rect x="9" y="18" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
+			<rect x="10.6" y="10.6" width="1.8" height="1.8" fill="currentColor"/>
+			<rect x="19.6" y="10.6" width="1.8" height="1.8" fill="currentColor"/>
+			<rect x="10.6" y="19.6" width="1.8" height="1.8" fill="currentColor"/>
+			<rect x="18" y="18" width="2" height="2" fill="currentColor"/>
+			<rect x="21.5" y="18" width="2" height="2" fill="currentColor"/>
+			<rect x="18" y="21.5" width="2" height="2" fill="currentColor"/>
+			<rect x="21.5" y="21.5" width="2" height="2" fill="currentColor"/>
+		</svg>`
+	},
+	{
 		slug: 'folio',
 		name: 'Folio',
 		tagline: 'Markdown, typeset.',
