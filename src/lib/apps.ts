@@ -189,5 +189,19 @@ export const apps: AppMeta[] = [
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 14v4M12 10.5v11M16 8v16M20 10.5v11M24 14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 		</svg>`
+	},
+	{
+		slug: 'ease',
+		name: 'Ease',
+		tagline: 'Shape a cubic-bezier curve, feel it move.',
+		description:
+			'Drag two handles to shape a cubic-bezier easing curve, watch it play on a live preview track, and copy it as CSS, a JS array, or a standalone easing function — with a curated set of named presets to start from.',
+		tag: 'Motion',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M8 23c5 0 5-13 16-13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			<circle cx="8" cy="23" r="1.7" fill="currentColor"/>
+			<circle cx="24" cy="10" r="1.7" fill="currentColor"/>
+		</svg>`
 	}
 ];
