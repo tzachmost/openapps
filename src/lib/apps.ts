@@ -150,5 +150,19 @@ export const apps: AppMeta[] = [
 			<path d="M16 9.5 22 21.5H10L16 9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
 			<path d="M9 24.5h4M19 24.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
 		</svg>`
+	},
+	{
+		slug: 'bloom',
+		name: 'Bloom',
+		tagline: 'Drag a few orbs into a soft gradient.',
+		description:
+			'Pick a palette, drag its colored orbs into place, and Bloom blurs them into a soft mesh gradient with a little film grain over the top. Export a PNG at wallpaper resolution or copy an approximate CSS background — all rendered on your device.',
+		tag: 'Design',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<circle cx="13" cy="13.5" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+			<circle cx="20.5" cy="15" r="3.6" stroke="currentColor" stroke-width="1.8"/>
+			<circle cx="15.5" cy="20.5" r="3.6" stroke="currentColor" stroke-width="1.8"/>
+		</svg>`
 	}
 ];
