@@ -137,5 +137,18 @@ export const apps: AppMeta[] = [
 			<path d="M16 9 21 11.2v4.3c0 3.7-2.3 6.5-5 7.5-2.7-1-5-3.8-5-7.5v-4.3L16 9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
 			<path d="M13.4 16.3 15.3 18.2l3.3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
+	},
+	{
+		slug: 'delta',
+		name: 'Delta',
+		tagline: 'Compare two versions of any text, line by line.',
+		description:
+			'Paste or drop two versions of any text or code and Delta computes a real diff — Myers’ algorithm, not a naive comparison — with word-level highlights on changed lines, split or unified view, and an exportable .patch file. No JSON required, unlike Sift.',
+		tag: 'Dev',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M16 9.5 22 21.5H10L16 9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			<path d="M9 24.5h4M19 24.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+		</svg>`
 	}
 ];
