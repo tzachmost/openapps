@@ -9,6 +9,10 @@ A small, growing collection of tools that run entirely in your browser — no ac
 - **[Swatch](src/routes/apps/swatch)** — pull a color palette out of any image via median-cut quantization.
 - **[Sift](src/routes/apps/sift)** — format, validate, and diff JSON as a collapsible tree.
 - **[Mat](src/routes/apps/mat)** — mount a screenshot on a background with padding, corners, and a shadow.
+- **[Folio](src/routes/apps/folio)** — a Markdown editor with a live, typeset preview.
+- **[Beacon](src/routes/apps/beacon)** — turn text or a URL into a QR code, hand-rolled encoder.
+- **[Loop](src/routes/apps/loop)** — trim a video clip into an animated GIF.
+- **[Crest](src/routes/apps/crest)** — package a logo into a full favicon set — ICO, PNGs, manifest.
 
 ## Developing
 

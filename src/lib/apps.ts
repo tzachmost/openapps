@@ -124,5 +124,18 @@ export const apps: AppMeta[] = [
 			<path d="M21 17v2a3 3 0 0 1-3 3h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M14.7 20 12 22 14.7 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
+	},
+	{
+		slug: 'crest',
+		name: 'Crest',
+		tagline: 'One image in, a full favicon set out.',
+		description:
+			'Drop in a logo or mark and Crest crops it square, composites it over a background you choose, and packages every size a modern site needs — ICO, PNGs, a web manifest, the head tags — into one ZIP, hand-rolled and built entirely on your device.',
+		tag: 'Web',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M16 9 21 11.2v4.3c0 3.7-2.3 6.5-5 7.5-2.7-1-5-3.8-5-7.5v-4.3L16 9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			<path d="M13.4 16.3 15.3 18.2l3.3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
