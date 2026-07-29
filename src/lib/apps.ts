@@ -109,5 +109,20 @@ export const apps: AppMeta[] = [
 			<path d="M18 9v3h3" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
 			<path d="M13.5 16h5M13.5 19h5M13.5 22h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
 		</svg>`
+	},
+	{
+		slug: 'loop',
+		name: 'Loop',
+		tagline: 'Trim a clip into a GIF, frame by frame.',
+		description:
+			'Drop in a video, mark the part worth keeping, and Loop renders it to an animated GIF — a hand-rolled encoder with real LZW compression and one shared color palette across every frame, built entirely on your device.',
+		tag: 'Video',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M11 15v-2a3 3 0 0 1 3-3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M17.3 8 20 10 17.3 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M21 17v2a3 3 0 0 1-3 3h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M14.7 20 12 22 14.7 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
