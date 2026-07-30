@@ -216,5 +216,20 @@ export const apps: AppMeta[] = [
 			<circle cx="13" cy="13" r="3.2" stroke="currentColor" stroke-width="1.8"/>
 			<path d="M15.5 15.5 23 23M19.3 19.3l2.1 2.1M22 16.6l2.1 2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
+	},
+	{
+		slug: 'meridian',
+		name: 'Meridian',
+		tagline: 'See what time it is everywhere at once.',
+		description:
+			'Add the places that matter, then drag across the day to see every clock update together and where the daylight actually overlaps. Your saved timezones stay in this browser — nothing is ever sent anywhere.',
+		tag: 'Time',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<circle cx="12.5" cy="17" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+			<path d="M12.5 13.5V17l2.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			<circle cx="21" cy="12.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+			<path d="M21 9V12.5L18.7 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
