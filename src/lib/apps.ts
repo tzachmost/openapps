@@ -231,5 +231,20 @@ export const apps: AppMeta[] = [
 			<circle cx="21" cy="12.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
 			<path d="M21 9V12.5L18.7 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
+	},
+	{
+		slug: 'ward',
+		name: 'Ward',
+		tagline: 'Generate a password or passphrase you can trust.',
+		description:
+			'Draws a password or a diceware passphrase straight from your browser’s cryptographic randomness — never Math.random, never sent anywhere, never remembered after you leave the page. Shows the real entropy behind it, not just a green bar.',
+		tag: 'Security',
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M13 15.5v-2.3a3 3 0 0 1 6 0v2.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			<rect x="10" y="15.5" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/>
+			<circle cx="16" cy="19" r="1.3" fill="currentColor"/>
+			<path d="M16 20.1v1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+		</svg>`
 	}
 ];
