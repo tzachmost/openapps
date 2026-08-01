@@ -24,7 +24,16 @@
 			})
 	);
 
-	const isCurated = $derived(activeTag !== 'All' || query.trim() !== '');
+	// Grouped by tag, in the order each tag first appears in `apps` — stable, never hand-maintained.
+	const grouped = $derived.by(() => {
+		const groups = new Map<string, typeof apps>();
+		for (const app of filtered) {
+			const bucket = groups.get(app.tag);
+			if (bucket) bucket.push(app);
+			else groups.set(app.tag, [app]);
+		}
+		return [...groups.entries()];
+	});
 
 	// --- file-drop hub: detect a dropped file's type, show only the tools that accept it ---
 	let hubFileInput = $state<HTMLInputElement | null>(null);
@@ -91,6 +100,10 @@
 		role="button"
 		tabindex="0"
 	>
+		<span class="corner corner-tl" aria-hidden="true"></span>
+		<span class="corner corner-tr" aria-hidden="true"></span>
+		<span class="corner corner-bl" aria-hidden="true"></span>
+		<span class="corner corner-br" aria-hidden="true"></span>
 		<span class="dropzone-title">Not sure which tool you need?</span>
 		<span class="dropzone-hint">
 			Drop a file here, or <span class="link">click to choose one</span> — we'll show you what applies.
@@ -105,7 +118,7 @@
 				<p class="hub-result-heading">
 					<strong>{hubFile?.name}</strong> — {hubMatch.category}. These tools work with it:
 				</p>
-				<div class="hub-grid">
+				<div class="hub-listing">
 					{#each hubMatch.apps as app (app.slug)}
 						<AppCard {app} />
 					{/each}
@@ -123,6 +136,15 @@
 
 <section class="showcase" aria-label="All tools">
 	<div class="controls">
+		<label class="prompt-search">
+			<span class="prompt-glyph" aria-hidden="true">&gt;</span>
+			<input
+				type="search"
+				placeholder="search tools_"
+				bind:value={query}
+				aria-label="Search tools"
+			/>
+		</label>
 		<div class="filters" role="group" aria-label="Filter by category">
 			{#each tags as tag (tag)}
 				<button
@@ -135,22 +157,26 @@
 				</button>
 			{/each}
 		</div>
-		<input
-			class="search"
-			type="search"
-			placeholder="Search tools…"
-			bind:value={query}
-			aria-label="Search tools"
-		/>
 	</div>
 
 	{#if filtered.length === 0}
 		<p class="empty">No tools match "{query}".</p>
 	{:else}
-		<div class="grid">
-			{#each filtered as app, i (app.slug)}
-				<AppCard {app} wide={isCurated ? true : i % 3 === 0} />
-			{/each}
+		<div class="listing">
+			<div class="listing-titlebar">
+				<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+				<span class="path">~/tools</span>
+			</div>
+			<div class="listing-body">
+				{#each grouped as [tag, toolsInTag] (tag)}
+					<div class="group">
+						<p class="group-label"># {tag}</p>
+						{#each toolsInTag as app (app.slug)}
+							<AppCard {app} />
+						{/each}
+					</div>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </section>
@@ -163,19 +189,19 @@
 	.hero {
 		max-width: 40rem;
 		margin: 0 auto;
-		padding: clamp(2.5rem, 8vw, 5.5rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 6vw, 3rem);
+		padding: clamp(2.5rem, 8vw, 5rem) clamp(1.25rem, 4vw, 3rem) clamp(1.75rem, 5vw, 2.5rem);
 		text-align: center;
 	}
 
 	.hero h1 {
-		font-size: clamp(2rem, 5vw, 2.75rem);
-		letter-spacing: -0.02em;
-		line-height: 1.1;
+		font-size: clamp(1.6rem, 4.4vw, 2.35rem);
+		letter-spacing: 0.01em;
+		line-height: 1.25;
 	}
 
 	.hero p {
 		margin-top: 1rem;
-		font-size: 1.05rem;
+		font-size: 1.02rem;
 		line-height: 1.6;
 		color: var(--text-dim);
 	}
@@ -187,27 +213,75 @@
 	}
 
 	.dropzone {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		gap: 0.4rem;
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
 		padding: clamp(1.5rem, 4vw, 2rem);
 		text-align: center;
 		cursor: pointer;
+		background: var(--bg-elevated);
 		transition:
-			border-color 0.15s ease,
-			background-color 0.15s ease;
+			border-color 0.12s ease,
+			box-shadow 0.12s ease,
+			transform 0.12s ease;
+	}
+
+	.dropzone:hover,
+	.dropzone:focus-visible {
+		box-shadow: var(--shadow-hard);
+		transform: translate(-2px, -2px);
 	}
 
 	.dropzone.dragging {
 		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
+		box-shadow: var(--shadow-hard);
+		transform: translate(-2px, -2px);
+	}
+
+	.corner {
+		position: absolute;
+		width: 0.9rem;
+		height: 0.9rem;
+		border-color: var(--accent);
+		pointer-events: none;
+	}
+
+	.corner-tl {
+		top: -2px;
+		left: -2px;
+		border-top: 3px solid var(--accent);
+		border-left: 3px solid var(--accent);
+	}
+
+	.corner-tr {
+		top: -2px;
+		right: -2px;
+		border-top: 3px solid var(--accent);
+		border-right: 3px solid var(--accent);
+	}
+
+	.corner-bl {
+		bottom: -2px;
+		left: -2px;
+		border-bottom: 3px solid var(--accent);
+		border-left: 3px solid var(--accent);
+	}
+
+	.corner-br {
+		bottom: -2px;
+		right: -2px;
+		border-bottom: 3px solid var(--accent);
+		border-right: 3px solid var(--accent);
 	}
 
 	.dropzone-title {
+		font-family: var(--font-mono);
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
 		font-weight: 600;
-		font-size: 1.02rem;
+		font-size: 1rem;
 	}
 
 	.dropzone-hint {
@@ -237,16 +311,19 @@
 		font-weight: 600;
 	}
 
-	.hub-grid {
+	.hub-listing {
 		margin-top: 0.9rem;
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 0.75rem;
+		border: 2px solid var(--border-strong);
+		background: var(--bg-elevated);
+	}
+
+	.hub-listing :global(.row:last-child) {
+		border-bottom: none;
 	}
 
 	.hub-reset {
 		margin-top: 1rem;
-		font: inherit;
+		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		color: var(--text-dim);
 		background: none;
@@ -261,14 +338,8 @@
 		color: var(--text);
 	}
 
-	@media (max-width: 30rem) {
-		.hub-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
 	.showcase {
-		max-width: 64rem;
+		max-width: 52rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem);
 	}
@@ -277,25 +348,48 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		justify-content: space-between;
 		gap: 0.75rem;
 		margin-bottom: 1.25rem;
 	}
 
-	.search {
-		font: inherit;
-		font-size: 0.85rem;
-		padding: 0.45rem 0.85rem;
-		border-radius: 999px;
-		border: 1px solid var(--border);
-		background: var(--bg-elevated);
-		color: var(--text);
+	.prompt-search {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex: 1;
 		min-width: 12rem;
+		padding: 0.5rem 0.85rem;
+		border: 2px solid var(--border-strong);
+		background: var(--bg-elevated);
 	}
 
-	.search:focus {
-		outline: none;
+	.prompt-search:focus-within {
 		border-color: var(--accent);
+	}
+
+	.prompt-glyph {
+		font-family: var(--font-mono);
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.prompt-search input {
+		flex: 1;
+		min-width: 0;
+		font: inherit;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		background: none;
+		border: none;
+		color: var(--text);
+	}
+
+	.prompt-search input:focus {
+		outline: none;
+	}
+
+	.prompt-search input::placeholder {
+		color: var(--text-dim);
 	}
 
 	.empty {
@@ -308,27 +402,26 @@
 	.filters {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: 0.4rem;
 	}
 
 	.filter {
 		font-family: var(--font-mono);
-		font-size: 0.78rem;
-		background: none;
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		background: var(--bg-elevated);
 		color: var(--text-dim);
-		border: 1px solid var(--border);
-		padding: 0.4rem 0.85rem;
-		border-radius: 999px;
+		border: 2px solid var(--border-strong);
+		padding: 0.4rem 0.7rem;
 		cursor: pointer;
 		transition:
-			color 0.15s ease,
-			border-color 0.15s ease,
-			background-color 0.15s ease;
+			color 0.12s ease,
+			background-color 0.12s ease;
 	}
 
 	.filter:hover {
 		color: var(--text);
-		border-color: var(--border-strong);
 	}
 
 	.filter.active {
@@ -337,34 +430,52 @@
 		border-color: var(--accent);
 	}
 
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 1rem;
+	.listing {
+		border: 2px solid var(--border-strong);
+		background: var(--bg-elevated);
+		box-shadow: var(--shadow-hard);
 	}
 
-	.grid :global(.card.wide) {
-		grid-column: span 3;
+	.listing-titlebar {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.55rem 0.9rem;
+		border-bottom: 2px solid var(--border-strong);
+		background: var(--bg);
 	}
 
-	@media (max-width: 48rem) {
-		.grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		.grid :global(.card.wide) {
-			grid-column: span 2;
-		}
+	.dots {
+		display: inline-flex;
+		gap: 0.3rem;
 	}
 
-	@media (max-width: 32rem) {
-		.grid {
-			grid-template-columns: 1fr;
-		}
+	.dots i {
+		display: block;
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: var(--border-strong);
+		font-style: normal;
+	}
 
-		.grid :global(.card.wide) {
-			grid-column: span 1;
-		}
+	.path {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-dim);
+	}
+
+	.group-label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--accent);
+		padding: 0.7rem 1.1rem 0.35rem;
+	}
+
+	.listing-body :global(.row:last-child) {
+		border-bottom: none;
 	}
 
 	.more {

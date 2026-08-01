@@ -3,11 +3,15 @@
 	--bg-elevated: #ffffff;
 	--text: #17150f;
 	--text-dim: #6b6659;
-	--accent: #dd4b1f;
+	--accent: #bc3d0a;
 	--accent-text: #fff8f2;
-	--border: rgba(23, 21, 15, 0.1);
-	--border-strong: rgba(23, 21, 15, 0.18);
+	--border: rgba(23, 21, 15, 0.22);
+	--border-strong: rgba(23, 21, 15, 0.4);
 	--shadow: 0 1px 2px rgba(23, 21, 15, 0.04), 0 12px 32px -16px rgba(23, 21, 15, 0.16);
+	/* Flat, unblurred "drawn" offset shadow — the one deliberately retro affordance every
+	   bordered surface can opt into via `box-shadow: var(--shadow-hard)`. Solid, not
+	   semi-transparent: a translucent hard shadow reads as blurry even at 0 blur-radius. */
+	--shadow-hard: 4px 4px 0 0 var(--text);
 
 	--font-sans:
 		ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -22,11 +26,12 @@
 		--bg-elevated: #171512;
 		--text: #f4f1ea;
 		--text-dim: #9c968a;
-		--accent: #ff6a3d;
+		--accent: #ffa64d;
 		--accent-text: #1a0d06;
-		--border: rgba(244, 241, 234, 0.1);
-		--border-strong: rgba(244, 241, 234, 0.18);
+		--border: rgba(244, 241, 234, 0.22);
+		--border-strong: rgba(244, 241, 234, 0.4);
 		--shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+		--shadow-hard: 4px 4px 0 0 var(--text);
 
 		color-scheme: dark;
 	}
@@ -56,6 +61,18 @@ h3,
 h4,
 p {
 	margin: 0;
+}
+
+/* Site-wide "command line chic" signature: headings read as terminal chrome, not prose —
+   monospace, uppercase, tight tracking. Cascades to every tool page automatically since none
+   of them set their own heading font-family. */
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.01em;
 }
 
 a {

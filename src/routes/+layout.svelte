@@ -15,7 +15,8 @@
 <div class="shell">
 	<header>
 		<a class="wordmark" href={resolve('/')}>
-			<span>open apps</span><span class="dot">.</span>
+			<span>open apps</span><span class="dot">.</span><span class="cursor" aria-hidden="true"
+			></span>
 		</a>
 		<nav>
 			<a class="nav-link" href={resolve('/writing')}>writing</a>
@@ -55,14 +56,43 @@
 
 	.wordmark {
 		text-decoration: none;
+		font-family: var(--font-mono);
 		font-weight: 600;
-		font-size: 1.05rem;
-		letter-spacing: -0.01em;
+		font-size: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.01em;
 		color: var(--text);
 	}
 
 	.wordmark .dot {
 		color: var(--accent);
+	}
+
+	.wordmark .cursor {
+		display: inline-block;
+		width: 0.55em;
+		height: 1em;
+		margin-left: 0.15em;
+		background: var(--accent);
+		vertical-align: -0.15em;
+		animation: blink 1.1s steps(1) infinite;
+	}
+
+	@keyframes blink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.wordmark .cursor {
+			animation: none;
+		}
 	}
 
 	nav {
@@ -74,19 +104,21 @@
 	.nav-link {
 		text-decoration: none;
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
+		font-size: 0.78rem;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
 		color: var(--text-dim);
-		border: 1px solid var(--border);
-		padding: 0.4rem 0.7rem;
-		border-radius: 999px;
+		border: 2px solid var(--border-strong);
+		padding: 0.35rem 0.65rem;
 		transition:
 			color 0.15s ease,
-			border-color 0.15s ease;
+			background-color 0.15s ease;
 	}
 
 	.nav-link:hover {
-		color: var(--text);
-		border-color: var(--border-strong);
+		background: var(--accent);
+		color: var(--accent-text);
+		border-color: var(--accent);
 	}
 
 	main {
