@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { formatBytes } from '$lib/format';
 	import {
@@ -348,15 +350,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Splice</h1>
-		<p>
-			Drop in a clip and drag across the waveform to pick the part worth keeping. Fade either edge,
-			nudge the level, and export a clean WAV — no upload, no re-encoding you can't see.
-		</p>
-	</header>
+	<ToolHeader title="Splice">
+		Drop in a clip and drag across the waveform to pick the part worth keeping. Fade either edge,
+		nudge the level, and export a clean WAV — no upload, no re-encoding you can't see.
+	</ToolHeader>
 
 	{#if !originalBuffer}
 		<div
@@ -390,7 +387,7 @@
 		{/if}
 	{:else}
 		<div class="workspace">
-			<div class="stage">
+			<Panel class="stage">
 				<div
 					class="wave-wrap"
 					bind:this={stageEl}
@@ -438,17 +435,17 @@
 					</div>
 				</div>
 				<p class="note">Drag across the waveform, or either handle, to change the range.</p>
-			</div>
+			</Panel>
 
-			<div class="panel" aria-label="Settings">
+			<Panel class="settings-panel">
 				<div class="panel-head">
 					<p class="file">{sourceName}</p>
-					<button class="ghost small" onclick={resetSettings}>Reset</button>
+					<Button variant="ghost" size="small" onclick={resetSettings}>Reset</Button>
 				</div>
 
 				<fieldset>
 					<legend>Trim</legend>
-					<button class="ghost small" onclick={selectAll}>Select all</button>
+					<Button variant="ghost" size="small" onclick={selectAll}>Select all</Button>
 				</fieldset>
 
 				<fieldset class="sliders">
@@ -473,10 +470,10 @@
 						<p class="warn">Clipping — the level is pushing samples past full scale.</p>
 					{/if}
 				</fieldset>
-			</div>
+			</Panel>
 		</div>
 
-		<div class="export">
+		<Panel class="export">
 			<div class="export-meta">
 				<p>
 					{originalBuffer.sampleRate.toLocaleString()} Hz · {channelLabel} · {formatDuration(
@@ -488,12 +485,12 @@
 			</div>
 
 			<div class="export-actions">
-				<button class="ghost" onclick={clearAudio}>New file</button>
-				<button class="primary" onclick={download} disabled={selDuration <= 0}>
+				<Button variant="ghost" onclick={clearAudio}>New file</Button>
+				<Button variant="primary" onclick={download} disabled={selDuration <= 0}>
 					Download WAV
-				</button>
+				</Button>
 			</div>
-		</div>
+		</Panel>
 
 		<p class="notice" aria-live="polite">{notice ?? ''}</p>
 
@@ -508,33 +505,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
 	}
 
 	.dropzone {
@@ -577,13 +547,6 @@
 		.workspace {
 			grid-template-columns: minmax(0, 1fr);
 		}
-	}
-
-	.stage {
-		padding: clamp(1rem, 3vw, 1.5rem);
-		border: 1px solid var(--border);
-		border-radius: 16px;
-		background: var(--bg-elevated);
 	}
 
 	.wave-wrap {
@@ -691,14 +654,10 @@
 		color: var(--text-dim);
 	}
 
-	.panel {
+	:global(.settings-panel) {
 		display: flex;
 		flex-direction: column;
 		gap: 1.1rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.panel-head {
@@ -768,60 +727,13 @@
 		color: var(--accent);
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.3rem 0.65rem;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover:not(:disabled) {
-		filter: brightness(1.05);
-	}
-
-	button.primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.export {
+	:global(.export) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 1rem;
 		margin-top: 1rem;
-		padding: 1rem 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.export-meta p {

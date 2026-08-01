@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
 	import { bloomToCss } from '$lib/bloom/css';
 	import {
 		BLOOM_PRESETS,
@@ -186,19 +189,14 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Bloom</h1>
-		<p>
-			Pick a palette, drag its orbs into place, and Bloom blurs them into a soft gradient with a
-			little film grain over the top — export a PNG at wallpaper resolution, or copy CSS to use it
-			on the web.
-		</p>
-	</header>
+	<ToolHeader title="Bloom">
+		Pick a palette, drag its orbs into place, and Bloom blurs them into a soft gradient with a
+		little film grain over the top — export a PNG at wallpaper resolution, or copy CSS to use it
+		on the web.
+	</ToolHeader>
 
 	<div class="workspace">
-		<div class="stage-wrap">
+		<Panel class="stage-wrap">
 			<div
 				class="stage"
 				bind:this={stageEl}
@@ -219,12 +217,12 @@
 					{/each}
 				</div>
 			</div>
-		</div>
+		</Panel>
 
-		<div class="panel" aria-label="Settings">
+		<Panel class="settings-panel">
 			<div class="panel-head">
 				<p class="label">Presets</p>
-				<button class="ghost small" onclick={reset}>Reset</button>
+				<Button variant="ghost" size="small" onclick={reset}>Reset</Button>
 			</div>
 			<div class="swatches">
 				{#each BLOOM_PRESETS as preset (preset.id)}
@@ -279,10 +277,10 @@
 					{/each}
 				</div>
 				<div class="stop-actions">
-					<button class="ghost small" disabled={stops.length >= MAX_STOPS} onclick={addStop}
-						>+ Add orb</button
+					<Button variant="ghost" size="small" disabled={stops.length >= MAX_STOPS} onclick={addStop}
+						>+ Add orb</Button
 					>
-					<button class="ghost small" onclick={shuffle}>Shuffle positions</button>
+					<Button variant="ghost" size="small" onclick={shuffle}>Shuffle positions</Button>
 				</div>
 			</fieldset>
 
@@ -305,19 +303,16 @@
 
 			<fieldset>
 				<legend>Size</legend>
-				<div class="segmented">
-					{#each BLOOM_SIZES as option (option.id)}
-						<label class:selected={sizeId === option.id}>
-							<input type="radio" bind:group={sizeId} value={option.id} />
-							{option.label}
-						</label>
-					{/each}
-				</div>
+				<Segmented
+					label="Size"
+					bind:value={sizeId}
+					options={BLOOM_SIZES.map((option) => ({ value: option.id, label: option.label }))}
+				/>
 			</fieldset>
-		</div>
+		</Panel>
 	</div>
 
-	<div class="export">
+	<Panel class="export">
 		<div class="export-meta">
 			<p>{size.width} × {size.height}</p>
 			<p class="dim">Exports at {size.width * exportScale} × {size.height * exportScale}</p>
@@ -332,22 +327,24 @@
 					</label>
 				{/each}
 			</div>
-			<button class="ghost" onclick={copyCss}>Copy CSS</button>
-			<button class="ghost" onclick={copyImage}>Copy image</button>
-			<button class="primary" onclick={download}>Download PNG</button>
+			<Button variant="ghost" onclick={copyCss}>Copy CSS</Button>
+			<Button variant="ghost" onclick={copyImage}>Copy image</Button>
+			<Button variant="primary" onclick={download}>Download PNG</Button>
 		</div>
-	</div>
+	</Panel>
 
 	<p class="notice" aria-live="polite">{notice ?? ''}</p>
 
-	<details class="css-preview">
-		<summary>Preview the CSS</summary>
-		<pre>{css}</pre>
-		<p class="note">
-			An approximation, not a pixel match — flat color stops with no blur or grain, since CSS has
-			no equivalent of blurring each shape before it composites. Use the PNG for the full effect.
-		</p>
-	</details>
+	<Panel class="css-preview">
+		<details>
+			<summary>Preview the CSS</summary>
+			<pre>{css}</pre>
+			<p class="note">
+				An approximation, not a pixel match — flat color stops with no blur or grain, since CSS has
+				no equivalent of blurring each shape before it composites. Use the PNG for the full effect.
+			</p>
+		</details>
+	</Panel>
 </div>
 
 <style>
@@ -355,33 +352,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
 	}
 
 	.workspace {
@@ -396,13 +366,6 @@
 		.workspace {
 			grid-template-columns: minmax(0, 1fr);
 		}
-	}
-
-	.stage-wrap {
-		border: 1px solid var(--border);
-		border-radius: 16px;
-		padding: clamp(0.75rem, 2vw, 1.25rem);
-		background: var(--bg-elevated);
 	}
 
 	.stage {
@@ -444,14 +407,10 @@
 		transform: scale(1.15);
 	}
 
-	.panel {
+	:global(.settings-panel) {
 		display: flex;
 		flex-direction: column;
 		gap: 1.1rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.panel-head {
@@ -669,17 +628,13 @@
 		outline-offset: 2px;
 	}
 
-	.export {
+	:global(.export) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 1rem;
 		margin-top: 1rem;
-		padding: 1rem 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.export-meta p {
@@ -704,49 +659,6 @@
 		padding: 0.3rem 0.55rem;
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover:not(:disabled) {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	button.ghost.small {
-		padding: 0.3rem 0.65rem;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover {
-		filter: brightness(1.05);
-	}
-
 	.notice {
 		min-height: 1.2rem;
 		margin-top: 0.6rem;
@@ -755,25 +667,21 @@
 		color: var(--text-dim);
 	}
 
-	.css-preview {
+	:global(.css-preview) {
 		margin-top: 1rem;
-		border: 1px solid var(--border);
-		border-radius: 16px;
-		padding: 1rem 1.1rem;
-		background: var(--bg-elevated);
 	}
 
-	.css-preview summary {
+	:global(.css-preview) summary {
 		cursor: pointer;
 		font-size: 0.85rem;
 		color: var(--text-dim);
 	}
 
-	.css-preview summary:hover {
+	:global(.css-preview) summary:hover {
 		color: var(--text);
 	}
 
-	.css-preview pre {
+	:global(.css-preview) pre {
 		margin: 0.9rem 0 0;
 		padding: 0.9rem;
 		background: var(--bg);

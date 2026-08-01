@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { formatBytes } from '$lib/format';
 	import { captureFrames, computeFrameTimes, computeOutputSize } from '$lib/loop/capture';
@@ -230,16 +232,11 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Loop</h1>
-		<p>
-			Trim a video clip to the part worth keeping, and Loop renders it to an animated GIF — frame
-			sampling, color quantization, and LZW compression all written from scratch and run on your
-			device. Nothing leaves the browser.
-		</p>
-	</header>
+	<ToolHeader title="Loop">
+		Trim a video clip to the part worth keeping, and Loop renders it to an animated GIF — frame
+		sampling, color quantization, and LZW compression all written from scratch and run on your
+		device. Nothing leaves the browser.
+	</ToolHeader>
 
 	{#if !videoUrl}
 		<div
@@ -273,7 +270,7 @@
 		{/if}
 	{:else}
 		<div class="workspace">
-			<div class="stage">
+			<Panel class="stage">
 				<video
 					bind:this={videoEl}
 					src={videoUrl}
@@ -284,10 +281,10 @@
 				></video>
 
 				<div class="trim-controls">
-					<button class="ghost small" onclick={markStart}>Mark start</button>
+					<Button variant="ghost" size="small" onclick={markStart}>Mark start</Button>
 					<span class="trim-readout">{formatTime(trimStart)} – {formatTime(trimEnd)}</span>
-					<button class="ghost small" onclick={markEnd}>Mark end</button>
-					<button class="ghost small" onclick={previewTrim}>▶ Preview trim</button>
+					<Button variant="ghost" size="small" onclick={markEnd}>Mark end</Button>
+					<Button variant="ghost" size="small" onclick={previewTrim}>▶ Preview trim</Button>
 				</div>
 
 				<div class="fine">
@@ -318,12 +315,12 @@
 						/>
 					</label>
 				</div>
-			</div>
+			</Panel>
 
-			<div class="panel" aria-label="Settings">
+			<Panel class="settings-panel">
 				<div class="panel-head">
 					<p class="file">{sourceName}</p>
-					<button class="ghost small" onclick={reset}>New clip</button>
+					<Button variant="ghost" size="small" onclick={reset}>New clip</Button>
 				</div>
 
 				<fieldset>
@@ -374,26 +371,31 @@
 					{/if}
 				</div>
 
-				<button class="primary" disabled={!canGenerate} onclick={generate}>
+				<Button
+					variant="primary"
+					style="width: 100%;"
+					disabled={!canGenerate}
+					onclick={generate}
+				>
 					{phase === 'sampling'
 						? `Sampling ${progressDone}/${progressTotal}…`
 						: phase === 'encoding'
 							? 'Encoding…'
 							: 'Generate GIF'}
-				</button>
-			</div>
+				</Button>
+			</Panel>
 		</div>
 
 		{#if resultUrl}
-			<div class="result">
+			<Panel class="result">
 				<img src={resultUrl} alt="Generated GIF preview" />
 				<div class="result-meta">
 					<p>
 						{resultFrames} frames · {formatBytes(resultBytes)}
 					</p>
-					<button class="primary" onclick={download}>Download GIF</button>
+					<Button variant="primary" style="width: 100%;" onclick={download}>Download GIF</Button>
 				</div>
-			</div>
+			</Panel>
 		{/if}
 
 		{#if errorMessage}
@@ -407,33 +409,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
 	}
 
 	.dropzone {
@@ -487,14 +462,10 @@
 		}
 	}
 
-	.stage {
+	:global(.stage) {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
-		padding: clamp(1rem, 3vw, 1.5rem);
-		border: 1px solid var(--border);
-		border-radius: 16px;
-		background: var(--bg-elevated);
 	}
 
 	video {
@@ -543,14 +514,10 @@
 		accent-color: var(--accent);
 	}
 
-	.panel {
+	:global(.settings-panel) {
 		display: flex;
 		flex-direction: column;
 		gap: 1.1rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.panel-head {
@@ -636,63 +603,15 @@
 		color: var(--accent);
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.3rem 0.65rem;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.85rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.6rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-		width: 100%;
-	}
-
-	button.primary:hover:not(:disabled) {
-		filter: brightness(1.05);
-	}
-
-	button.primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.result {
+	:global(.result) {
 		margin-top: 1.5rem;
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
 		gap: 1.25rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
-	.result img {
+	:global(.result) img {
 		max-width: 20rem;
 		max-height: 16rem;
 		width: auto;
