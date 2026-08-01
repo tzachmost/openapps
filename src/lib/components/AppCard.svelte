@@ -2,130 +2,131 @@
 	import { base } from '$app/paths';
 	import type { AppMeta } from '$lib/apps';
 
-	let { app, wide = false }: { app: AppMeta; wide?: boolean } = $props();
+	let { app }: { app: AppMeta } = $props();
 </script>
 
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- built from the apps manifest, not a static route literal -->
-<a class="card" class:wide href="{base}/apps/{app.slug}">
+<a class="row" href="{base}/apps/{app.slug}">
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- app.icon is authored in-repo, not user input -->
 	<div class="icon" aria-hidden="true">{@html app.icon}</div>
 	<div class="body">
-		<div class="heading">
-			<h3>{app.name}</h3>
-			<span class="tag">{app.tag}</span>
-		</div>
-		<p>{wide ? app.description : app.tagline}</p>
+		<h3>{app.name}</h3>
+		<p>{app.tagline}</p>
 	</div>
-	<span class="arrow" aria-hidden="true">→</span>
+	<span class="tag">{app.tag}</span>
+	<span class="arrow" aria-hidden="true">&gt;</span>
 </a>
 
 <style>
-	.card {
+	.row {
 		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.9rem;
-		padding: 1.5rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.85rem 1.1rem;
 		text-decoration: none;
 		color: var(--text);
-		box-shadow: var(--shadow);
+		border-bottom: 1px solid var(--border);
 		transition:
-			transform 0.18s ease,
-			border-color 0.18s ease;
+			background-color 0.1s ease,
+			color 0.1s ease;
 	}
 
-	.card.wide {
-		flex-direction: row;
-		align-items: flex-start;
-		gap: 1.1rem;
-		padding: 1.75rem;
-	}
-
-	.card:hover {
-		transform: translateY(-2px);
-		border-color: var(--border-strong);
-	}
-
-	.card:hover .arrow {
-		transform: translate(2px, -2px);
+	.row:hover,
+	.row:focus-visible {
+		background: var(--accent);
+		color: var(--accent-text);
+		outline: none;
 	}
 
 	.icon {
 		flex-shrink: 0;
-		width: 2.75rem;
-		height: 2.75rem;
+		width: 2.25rem;
+		height: 2.25rem;
 		display: grid;
 		place-items: center;
-		border-radius: 12px;
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
+		border-radius: 6px;
+		border: 1.5px solid var(--border-strong);
+		background: var(--bg);
 		color: var(--accent);
 	}
 
-	.card.wide .icon {
-		width: 3.25rem;
-		height: 3.25rem;
+	.row:hover .icon,
+	.row:focus-visible .icon {
+		background: var(--accent-text);
+		border-color: var(--accent-text);
 	}
 
 	.icon :global(svg) {
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-
-	.card.wide .icon :global(svg) {
-		width: 1.75rem;
-		height: 1.75rem;
+		width: 1.35rem;
+		height: 1.35rem;
 	}
 
 	.body {
 		flex: 1;
 		min-width: 0;
-	}
-
-	.heading {
 		display: flex;
 		align-items: baseline;
-		gap: 0.6rem;
-		flex-wrap: wrap;
+		gap: 0.75rem;
 	}
 
 	h3 {
-		font-size: 1.1rem;
-		letter-spacing: -0.01em;
+		font-size: 0.95rem;
+		flex-shrink: 0;
 	}
 
-	.card.wide h3 {
-		font-size: 1.25rem;
+	.body p {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--text-dim);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.row:hover .body p,
+	.row:focus-visible .body p {
+		color: inherit;
+		opacity: 0.85;
 	}
 
 	.tag {
+		flex-shrink: 0;
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: 0.68rem;
 		text-transform: uppercase;
 		letter-spacing: 0.06em;
 		color: var(--text-dim);
 	}
 
-	p {
-		margin: 0;
-		font-size: 0.9rem;
-		line-height: 1.5;
-		color: var(--text-dim);
-	}
-
-	.card.wide p {
-		font-size: 0.95rem;
-		max-width: 34rem;
+	.row:hover .tag,
+	.row:focus-visible .tag {
+		color: inherit;
+		opacity: 0.85;
 	}
 
 	.arrow {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
 		color: var(--text-dim);
-		transition: transform 0.18s ease;
 	}
 
-	.card:not(.wide) .arrow {
-		margin-top: auto;
+	.row:hover .arrow,
+	.row:focus-visible .arrow {
+		color: inherit;
+	}
+
+	@media (max-width: 34rem) {
+		.body {
+			flex-direction: column;
+			gap: 0.15rem;
+		}
+
+		.body p {
+			white-space: normal;
+		}
+
+		.tag {
+			display: none;
+		}
 	}
 </style>

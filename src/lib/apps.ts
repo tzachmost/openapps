@@ -28,7 +28,7 @@ export const apps: AppMeta[] = [
 		tagline: 'See what a photo reveals, then strip it out.',
 		description:
 			'Every JPEG carries hidden metadata — camera model, timestamps, sometimes an exact GPS location. Bare shows you what is embedded, then removes it byte-for-byte with no re-encoding and no quality loss.',
-		tag: 'Privacy',
+		tag: 'Images',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M16 9.5c-2.6 0-4.6 2-4.6 4.5 0 3 4.6 8 4.6 8s4.6-5 4.6-8c0-2.5-2-4.5-4.6-4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -42,7 +42,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Pull a color palette out of any image.',
 		description:
 			'Drop in a photo and Swatch reads its dominant colors straight off the pixels using median-cut quantization — hex, RGB, and HSL, one click to copy, no AI involved.',
-		tag: 'Design',
+		tag: 'Color',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M20.5 9.5 22.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -56,7 +56,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Give a screenshot room to breathe.',
 		description:
 			'Mount a screenshot on a background with padding, rounded corners, and a soft shadow — or let Mat build a gradient out of the image’s own colors. Renders to PNG on your device.',
-		tag: 'Design',
+		tag: 'Images',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<rect x="10" y="10" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/>
@@ -81,7 +81,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Turn text into a QR code, no server involved.',
 		description:
 			'Type a URL or any text and Beacon builds a scannable QR code for it — a hand-rolled encoder with real Reed–Solomon error correction, pick your error-correction level and colors, then export PNG or SVG.',
-		tag: 'Share',
+		tag: 'Utility',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
@@ -102,7 +102,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Markdown, typeset.',
 		description:
 			'Write Markdown on one side and watch it typeset live on the other, then export a self-contained HTML file or print straight to PDF. Parsed entirely on your device, no dependency.',
-		tag: 'Docs',
+		tag: 'Utility',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M12 9h6l3 3v11a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -116,7 +116,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Trim a clip into a GIF, frame by frame.',
 		description:
 			'Drop in a video, mark the part worth keeping, and Loop renders it to an animated GIF — a hand-rolled encoder with real LZW compression and one shared color palette across every frame, built entirely on your device.',
-		tag: 'Video',
+		tag: 'Media',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M11 15v-2a3 3 0 0 1 3-3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -131,7 +131,7 @@ export const apps: AppMeta[] = [
 		tagline: 'One image in, a full favicon set out.',
 		description:
 			'Drop in a logo or mark and Crest crops it square, composites it over a background you choose, and packages every size a modern site needs — ICO, PNGs, a web manifest, the head tags — into one ZIP, hand-rolled and built entirely on your device.',
-		tag: 'Web',
+		tag: 'Images',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M16 9 21 11.2v4.3c0 3.7-2.3 6.5-5 7.5-2.7-1-5-3.8-5-7.5v-4.3L16 9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -170,7 +170,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Drag a few orbs into a soft gradient.',
 		description:
 			'Pick a palette, drag its colored orbs into place, and Bloom blurs them into a soft mesh gradient with a little film grain over the top. Export a PNG at wallpaper resolution or copy an approximate CSS background — all rendered on your device.',
-		tag: 'Design',
+		tag: 'Color',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="13" cy="13.5" r="4.2" stroke="currentColor" stroke-width="1.8"/>
@@ -184,7 +184,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Trim and fade an audio clip on the waveform.',
 		description:
 			'Drop in a clip and drag across the waveform to pick a range, fade either edge, nudge the level, then export a clean WAV. Decoded, rendered, and previewed entirely in your browser — nothing is ever uploaded.',
-		tag: 'Audio',
+		tag: 'Media',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 14v4M12 10.5v11M16 8v16M20 10.5v11M24 14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -196,7 +196,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Shape a cubic-bezier curve, feel it move.',
 		description:
 			'Drag two handles to shape a cubic-bezier easing curve, watch it play on a live preview track, and copy it as CSS, a JS array, or a standalone easing function — with a curated set of named presets to start from.',
-		tag: 'Motion',
+		tag: 'Utility',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 23c5 0 5-13 16-13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -223,7 +223,7 @@ export const apps: AppMeta[] = [
 		tagline: 'See what time it is everywhere at once.',
 		description:
 			'Add the places that matter, then drag across the day to see every clock update together and where the daylight actually overlaps. Your saved timezones stay in this browser — nothing is ever sent anywhere.',
-		tag: 'Time',
+		tag: 'Utility',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="12.5" cy="17" r="5.5" stroke="currentColor" stroke-width="1.8"/>
@@ -253,7 +253,7 @@ export const apps: AppMeta[] = [
 		tagline: 'Pick a color, get everything about it.',
 		description:
 			'Pick a color to see it in hex, RGB, HSL, HSV, and OKLCH at once, generate a matching harmony, check its WCAG contrast, and preview it under color vision deficiencies — hand-rolled OKLab math and colorblindness matrices, all on your device.',
-		tag: 'Design',
+		tag: 'Color',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="16" cy="16" r="7" stroke="currentColor" stroke-width="1.8"/>
