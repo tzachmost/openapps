@@ -4,9 +4,22 @@ export type AppMeta = {
 	tagline: string;
 	description: string;
 	tag: string;
+	/** Slugs of genuinely related tools — a curated, hand-picked list, not derived from `tag`
+	 *  (several tags hold just one tool post-merge, and same-tag doesn't always mean related
+	 *  anyway). Empty when a tool honestly doesn't have a close relative yet. */
+	related: string[];
 	/** Inline SVG markup, authored in-repo — safe to render with {@html}. */
 	icon: string;
 };
+
+/** Resolves `slug`'s `related` list to full AppMeta records, in declared order. */
+export function relatedApps(slug: string): AppMeta[] {
+	const app = apps.find((a) => a.slug === slug);
+	if (!app) return [];
+	return app.related
+		.map((s) => apps.find((a) => a.slug === s))
+		.filter((a): a is AppMeta => a !== undefined);
+}
 
 export const apps: AppMeta[] = [
 	{
@@ -16,6 +29,7 @@ export const apps: AppMeta[] = [
 		description:
 			'One shared queue, five things to do with it: shrink and convert, strip hidden EXIF/GPS metadata, pull a color palette, mount a screenshot with a background and shadow, or package a full favicon set. Everything renders on your device, nothing is ever uploaded.',
 		tag: 'Images',
+		related: ['prism'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 19.5 13 14.5 17 18.5 20.5 15 24 18.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
@@ -31,6 +45,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste JSON to pretty-print, validate, and explore it as a collapsible tree with precise error locations — or switch to Diff to compare two versions structurally, key by key. No server round-trip.',
 		tag: 'Dev',
+		related: ['delta', 'claim'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M13 9c-1.8 0-2.6.9-2.6 2.6v2c0 1-.4 1.4-1.4 1.4.9 0 1.4.4 1.4 1.4v2c0 1.7.8 2.6 2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -44,6 +59,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Type a URL or any text and Beacon builds a scannable QR code for it — a hand-rolled encoder with real Reed–Solomon error correction, pick your error-correction level and colors, then export PNG or SVG.',
 		tag: 'Utility',
+		related: [],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
@@ -65,6 +81,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Write Markdown on one side and watch it typeset live on the other, then export a self-contained HTML file or print straight to PDF. Parsed entirely on your device, no dependency.',
 		tag: 'Utility',
+		related: [],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M12 9h6l3 3v11a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -79,6 +96,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Drop in a video, mark the part worth keeping, and Loop renders it to an animated GIF — a hand-rolled encoder with real LZW compression and one shared color palette across every frame, built entirely on your device.',
 		tag: 'Media',
+		related: ['splice'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M11 15v-2a3 3 0 0 1 3-3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -94,6 +112,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste or drop two versions of any text or code and Delta computes a real diff — Myers’ algorithm, not a naive comparison — with word-level highlights on changed lines, split or unified view, and an exportable .patch file. No JSON required, unlike Sift.',
 		tag: 'Dev',
+		related: ['sift', 'claim'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M16 9.5 22 21.5H10L16 9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -107,6 +126,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Compute MD5, SHA-1, SHA-256, SHA-384, and SHA-512 for pasted text or dropped files, check the result against a hash you were given, and spot exact duplicates across a batch — a hand-rolled MD5 alongside the browser’s own SubtleCrypto, all on your device.',
 		tag: 'Security',
+		related: ['ward'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M13 8.5 11 23.5M21 8.5 19 23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -120,6 +140,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Pick a color to see it in hex, RGB, HSL, HSV, and OKLCH at once, generate a matching harmony, check its WCAG contrast, and preview it under color vision deficiencies — or switch to Gradient and drag colored orbs into a soft, grainy mesh gradient, exported as a PNG or approximate CSS. Hand-rolled OKLab math and colorblindness matrices, all on your device.',
 		tag: 'Color',
+		related: ['darkroom'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M16 8 22.5 20H9.5L16 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -134,6 +155,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Drop in a clip and drag across the waveform to pick a range, fade either edge, nudge the level, then export a clean WAV. Decoded, rendered, and previewed entirely in your browser — nothing is ever uploaded.',
 		tag: 'Media',
+		related: ['loop'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 14v4M12 10.5v11M16 8v16M20 10.5v11M24 14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -146,6 +168,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Drag two handles to shape a cubic-bezier easing curve, watch it play on a live preview track, and copy it as CSS, a JS array, or a standalone easing function — with a curated set of named presets to start from.',
 		tag: 'Utility',
+		related: [],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M8 23c5 0 5-13 16-13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -160,6 +183,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste a token to see its header and claims decoded, a plain-language expiry status, and a signature check against a secret or public key via the browser’s own Web Crypto — or switch to Encode to build and sign a fresh HS256/384/512 token. Nothing leaves your device.',
 		tag: 'Dev',
+		related: ['sift', 'delta'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="13" cy="13" r="3.2" stroke="currentColor" stroke-width="1.8"/>
@@ -173,6 +197,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Add the places that matter, then drag across the day to see every clock update together and where the daylight actually overlaps. Your saved timezones stay in this browser — nothing is ever sent anywhere.',
 		tag: 'Utility',
+		related: [],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="12.5" cy="17" r="5.5" stroke="currentColor" stroke-width="1.8"/>
@@ -188,6 +213,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Draws a password or a diceware passphrase straight from your browser’s cryptographic randomness — never Math.random, never sent anywhere, never remembered after you leave the page. Shows the real entropy behind it, not just a green bar.',
 		tag: 'Security',
+		related: ['seal'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M13 15.5v-2.3a3 3 0 0 1 6 0v2.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>

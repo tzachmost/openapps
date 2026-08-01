@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import {
@@ -357,6 +358,8 @@
 			libraries or canvas code that take a JS easing function instead of a CSS value.
 		</p>
 	</details>
+
+	<RelatedTools slug="ease" />
 </div>
 
 <style>

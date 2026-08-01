@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import Dropzone from '$lib/components/Dropzone.svelte';
@@ -466,6 +467,8 @@
 			<p class="error">{errorMessage}</p>
 		{/if}
 	{/if}
+
+	<RelatedTools slug="splice" />
 </div>
 
 <style>

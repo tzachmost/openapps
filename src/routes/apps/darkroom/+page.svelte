@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
@@ -142,7 +143,11 @@
 		if (!item) return;
 		compressState[id] = { ...compressState[id], status: 'processing' };
 		try {
-			const result = await compressImage(item.file, { format, quality, maxDimension: maxDimension || null });
+			const result = await compressImage(item.file, {
+				format,
+				quality,
+				maxDimension: maxDimension || null
+			});
 			const prev = compressState[id];
 			if (prev?.outputUrl) URL.revokeObjectURL(prev.outputUrl);
 			const mimeType = resolveFormat(item.file.type, format);
@@ -188,7 +193,11 @@
 		const results = await Promise.all(
 			FORMAT_CHOICES.map(async ({ value }) => {
 				try {
-					const result = await compressImage(item.file, { format: value, quality, maxDimension: maxDimension || null });
+					const result = await compressImage(item.file, {
+						format: value,
+						quality,
+						maxDimension: maxDimension || null
+					});
 					URL.revokeObjectURL(result.url);
 					return [value, result.blob.size] as const;
 				} catch {
@@ -367,7 +376,8 @@
 	const paletteItems = $derived(
 		items.map((item) => {
 			const p = paletteState[item.id];
-			const colors: PaletteColor[] = p?.status === 'ready' && p.pixels ? buildPalette(p.pixels, colorCount) : [];
+			const colors: PaletteColor[] =
+				p?.status === 'ready' && p.pixels ? buildPalette(p.pixels, colorCount) : [];
 			return { item, state: p, colors };
 		})
 	);
@@ -380,7 +390,10 @@
 			const pixels = samplePixels(bitmap);
 			bitmap.close();
 			if (pixels.length === 0) {
-				paletteState[id] = { status: 'error', errorMessage: 'This image has no visible pixels to sample.' };
+				paletteState[id] = {
+					status: 'error',
+					errorMessage: 'This image has no visible pixels to sample.'
+				};
 				return;
 			}
 			paletteState[id] = { status: 'ready', pixels };
@@ -564,10 +577,14 @@
 	let crestBuilding = $state(false);
 
 	const crestBackground = $derived<CrestBackground>(
-		crestBackgroundKind === 'solid' ? { kind: 'solid', color: crestBackgroundColor } : { kind: 'transparent' }
+		crestBackgroundKind === 'solid'
+			? { kind: 'solid', color: crestBackgroundColor }
+			: { kind: 'transparent' }
 	);
 	const crestOpts = $derived({ background: crestBackground, padding: crestPadding / 100 });
-	const crestThemeColor = $derived(crestBackgroundKind === 'solid' ? crestBackgroundColor : '#ffffff');
+	const crestThemeColor = $derived(
+		crestBackgroundKind === 'solid' ? crestBackgroundColor : '#ffffff'
+	);
 
 	$effect(() => {
 		if (mode !== 'favicon' || !crestCanvasEl || !activeBitmap) return;
@@ -660,7 +677,10 @@
 			previewUrl: URL.createObjectURL(file)
 		}));
 		items = [...items, ...newItems];
-		compressState = { ...compressState, ...Object.fromEntries(newItems.map((i) => [i.id, { status: 'pending' as const }])) };
+		compressState = {
+			...compressState,
+			...Object.fromEntries(newItems.map((i) => [i.id, { status: 'pending' as const }]))
+		};
 		if (!activeId && newItems.length > 0) activeId = newItems[0].id;
 		for (const item of newItems) {
 			readMetaItem(item.id);
@@ -753,7 +773,14 @@
 				</label>
 				<label class:disabled={!qualityMatters}>
 					<span>Quality — {Math.round(quality * 100)}%</span>
-					<input type="range" min="0.4" max="1" step="0.05" bind:value={quality} disabled={!qualityMatters} />
+					<input
+						type="range"
+						min="0.4"
+						max="1"
+						step="0.05"
+						bind:value={quality}
+						disabled={!qualityMatters}
+					/>
 				</label>
 				<label>
 					<span>Max dimension</span>
@@ -783,7 +810,9 @@
 							class:active={format === choice.value}
 							onclick={() => (format = choice.value)}
 						>
-							<span class="estimate-name">{choice.value === 'auto' ? autoResolvedLabel : choice.label}</span>
+							<span class="estimate-name"
+								>{choice.value === 'auto' ? autoResolvedLabel : choice.label}</span
+							>
 							<span class="estimate-size">
 								{#if estimating && size == null}
 									…
@@ -821,7 +850,9 @@
 							Compress {items.length} image{items.length === 1 ? '' : 's'}
 						</Button>
 						{#if doneItems.length > 1}
-							<Button variant="ghost" size="small" onclick={downloadAllCompressed}>Download all</Button>
+							<Button variant="ghost" size="small" onclick={downloadAllCompressed}
+								>Download all</Button
+							>
 						{/if}
 						<Button variant="ghost" size="small" onclick={clearAll}>Clear</Button>
 					</div>
@@ -844,19 +875,30 @@
 									<p class="status">
 										{formatBytes(item.file.size)} → {formatBytes(c.outputSize)}
 										{#if c.outputSize < item.file.size}
-											<span class="saved">−{Math.round((1 - c.outputSize / item.file.size) * 100)}%</span>
+											<span class="saved"
+												>−{Math.round((1 - c.outputSize / item.file.size) * 100)}%</span
+											>
 										{:else if c.outputSize > item.file.size}
-											<span class="grown">+{Math.round((c.outputSize / item.file.size - 1) * 100)}% larger</span>
+											<span class="grown"
+												>+{Math.round((c.outputSize / item.file.size - 1) * 100)}% larger</span
+											>
 										{/if}
 										· {c.width}×{c.height}
 									</p>
 								{/if}
 							</div>
 							<div class="row-actions">
-								<Button variant="ghost" size="small" disabled={c?.status !== 'done'} onclick={() => downloadCompressItem(item)}>
+								<Button
+									variant="ghost"
+									size="small"
+									disabled={c?.status !== 'done'}
+									onclick={() => downloadCompressItem(item)}
+								>
 									Download
 								</Button>
-								<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}>×</button>
+								<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}
+									>×</button
+								>
 							</div>
 						</li>
 					{/each}
@@ -876,7 +918,9 @@
 							<Button variant="ghost" size="small" onclick={stripAllMeta}>Strip all</Button>
 						{/if}
 						{#if metaStrippedCount > 1}
-							<Button variant="ghost" size="small" onclick={downloadAllStripped}>Download all stripped</Button>
+							<Button variant="ghost" size="small" onclick={downloadAllStripped}
+								>Download all stripped</Button
+							>
 						{/if}
 						<Button variant="ghost" size="small" onclick={clearAll}>Clear</Button>
 					</div>
@@ -899,13 +943,16 @@
 									{:else if m.status === 'ready'}
 										<p class="status">
 											{#if m.fields.length > 0}
-												<button class="link" onclick={() => (metaState[item.id].showFields = !m.showFields)}>
+												<button
+													class="link"
+													onclick={() => (metaState[item.id].showFields = !m.showFields)}
+												>
 													{m.showFields ? 'Hide' : 'Show'}
 													{m.fields.length} field{m.fields.length === 1 ? '' : 's'}
 												</button>
 											{:else if m.metadataBytes > 0}
-												No camera or location data — just {formatBytes(m.metadataBytes)} of container housekeeping
-												(e.g. a JFIF marker).
+												No camera or location data — just {formatBytes(m.metadataBytes)} of container
+												housekeeping (e.g. a JFIF marker).
 											{:else}
 												No metadata found — already clean.
 											{/if}
@@ -915,7 +962,9 @@
 								<div class="row-actions">
 									{#if m?.status === 'ready' && m.metadataBytes > 0}
 										{#if m.stripStatus === 'done' && m.strippedUrl}
-											<Button variant="ghost" size="small" onclick={() => downloadStripped(item)}>Download clean</Button>
+											<Button variant="ghost" size="small" onclick={() => downloadStripped(item)}
+												>Download clean</Button
+											>
 										{:else}
 											<Button
 												variant="ghost"
@@ -927,14 +976,20 @@
 											</Button>
 										{/if}
 									{/if}
-									<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}>×</button>
+									<button
+										class="icon-button"
+										aria-label="Remove"
+										onclick={() => removeItem(item.id)}>×</button
+									>
 								</div>
 							</div>
 
 							{#if m?.gps}
 								<div class="gps-banner">
 									<span>
-										GPS location embedded: <strong>{m.gps.lat.toFixed(5)}, {m.gps.lon.toFixed(5)}</strong>
+										GPS location embedded: <strong
+											>{m.gps.lat.toFixed(5)}, {m.gps.lon.toFixed(5)}</strong
+										>
 									</span>
 									<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL, not an app route -->
 									<a href={mapUrl(m.gps)} target="_blank" rel="noreferrer">View on map ↗</a>
@@ -956,8 +1011,8 @@
 
 							{#if m?.stripStatus === 'done' && m.strippedSize !== undefined}
 								<p class="strip-result">
-									Clean copy ready — {formatBytes(m.strippedSize)}, {formatBytes(m.metadataBytes)} of metadata removed,
-									pixels untouched.
+									Clean copy ready — {formatBytes(m.strippedSize)}, {formatBytes(m.metadataBytes)} of
+									metadata removed, pixels untouched.
 								</p>
 							{/if}
 						</li>
@@ -995,11 +1050,19 @@
 								</div>
 								<div class="row-actions">
 									{#if p?.status === 'ready'}
-										<Button variant="ghost" size="small" onclick={() => copyText(cssVariables(colors), `css:${item.id}`)}>
+										<Button
+											variant="ghost"
+											size="small"
+											onclick={() => copyText(cssVariables(colors), `css:${item.id}`)}
+										>
 											{copiedKey === `css:${item.id}` ? 'Copied!' : 'Copy as CSS'}
 										</Button>
 									{/if}
-									<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}>×</button>
+									<button
+										class="icon-button"
+										aria-label="Remove"
+										onclick={() => removeItem(item.id)}>×</button
+									>
 								</div>
 							</div>
 
@@ -1062,18 +1125,35 @@
 							<legend>Background</legend>
 							<div class="swatches">
 								{#each BACKGROUND_PRESETS as preset (preset.id)}
-									<label class="swatch-opt" class:selected={matPresetId === preset.id} title={preset.label}>
+									<label
+										class="swatch-opt"
+										class:selected={matPresetId === preset.id}
+										title={preset.label}
+									>
 										<input type="radio" bind:group={matPresetId} value={preset.id} />
 										<span class="chip" style:background={backgroundToCss(preset.background)}></span>
 										<span class="swatch-label">{preset.label}</span>
 									</label>
 								{/each}
-								<label class="swatch-opt" class:selected={matPresetId === AUTO_PRESET_ID} title="Derived from the image">
+								<label
+									class="swatch-opt"
+									class:selected={matPresetId === AUTO_PRESET_ID}
+									title="Derived from the image"
+								>
 									<input type="radio" bind:group={matPresetId} value={AUTO_PRESET_ID} />
-									<span class="chip" style:background={matAutoBackground ? backgroundToCss(matAutoBackground) : 'transparent'}></span>
+									<span
+										class="chip"
+										style:background={matAutoBackground
+											? backgroundToCss(matAutoBackground)
+											: 'transparent'}
+									></span>
 									<span class="swatch-label">Image</span>
 								</label>
-								<label class="swatch-opt" class:selected={matPresetId === NONE_PRESET_ID} title="Transparent">
+								<label
+									class="swatch-opt"
+									class:selected={matPresetId === NONE_PRESET_ID}
+									title="Transparent"
+								>
 									<input type="radio" bind:group={matPresetId} value={NONE_PRESET_ID} />
 									<span class="chip checker"></span>
 									<span class="swatch-label">None</span>
@@ -1119,7 +1199,13 @@
 							</label>
 							{#if matOpts.frame}
 								<div class="nested">
-									<input class="text-input" type="text" placeholder="Title (optional)" maxlength="80" bind:value={matOpts.title} />
+									<input
+										class="text-input"
+										type="text"
+										placeholder="Title (optional)"
+										maxlength="80"
+										bind:value={matOpts.title}
+									/>
 									<Segmented
 										compact
 										label="Frame theme"
@@ -1132,7 +1218,11 @@
 								</div>
 							{/if}
 							<label class="toggle" class:disabled={matPresetId === NONE_PRESET_ID}>
-								<input type="checkbox" bind:checked={matOpts.grain} disabled={matPresetId === NONE_PRESET_ID} />
+								<input
+									type="checkbox"
+									bind:checked={matOpts.grain}
+									disabled={matPresetId === NONE_PRESET_ID}
+								/>
 								<span>Grain</span>
 							</label>
 						</fieldset>
@@ -1190,8 +1280,8 @@
 								</label>
 							{:else}
 								<p class="note">
-									The Apple touch icon gets filled with white regardless — iOS renders transparency as solid black, so
-									leaving it transparent there would just look broken.
+									The Apple touch icon gets filled with white regardless — iOS renders transparency
+									as solid black, so leaving it transparent there would just look broken.
 								</p>
 							{/if}
 						</fieldset>
@@ -1224,7 +1314,12 @@
 							<p class="mockup-label">Browser tab</p>
 						</div>
 						<div class="mockup">
-							<div class="squircle-icon" style:background={crestBackgroundKind === 'solid' ? crestBackgroundColor : '#ffffff'}>
+							<div
+								class="squircle-icon"
+								style:background={crestBackgroundKind === 'solid'
+									? crestBackgroundColor
+									: '#ffffff'}
+							>
 								{#if crestIosUrl}<img src={crestIosUrl} alt="" />{/if}
 							</div>
 							<p class="mockup-label">Home screen (iOS)</p>
@@ -1237,8 +1332,8 @@
 						</div>
 					</div>
 					<p class="note">
-						Android's adaptive-icon mask is the strictest of the three — anything outside that circle gets clipped by
-						the OS. More padding keeps a mark safe there.
+						Android's adaptive-icon mask is the strictest of the three — anything outside that
+						circle gets clipped by the OS. More padding keeps a mark safe there.
 					</p>
 				</section>
 
@@ -1252,7 +1347,9 @@
 						</ul>
 					</div>
 					<div class="export-actions">
-						<Button variant="ghost" onclick={copyCrestSnippet}>{crestNotice ?? 'Copy <head> snippet'}</Button>
+						<Button variant="ghost" onclick={copyCrestSnippet}
+							>{crestNotice ?? 'Copy <head> snippet'}</Button
+						>
 						<Button variant="primary" onclick={downloadCrestZip} disabled={crestBuilding}>
 							{crestBuilding ? 'Building…' : 'Download ZIP'}
 						</Button>
@@ -1261,6 +1358,8 @@
 			{/if}
 		{/if}
 	{/if}
+
+	<RelatedTools slug="darkroom" />
 </div>
 
 <style>
