@@ -19,7 +19,6 @@
 			></span>
 		</a>
 		<nav>
-			<a class="nav-link" href={resolve('/writing')}>writing</a>
 			<a
 				class="nav-link"
 				href="https://github.com/tzachmost/openapps"
