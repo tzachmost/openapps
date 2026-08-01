@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { formatBytes } from '$lib/format';
 	import { captureFrames, computeFrameTimes, computeOutputSize } from '$lib/loop/capture';
 	import { buildGlobalPalette, mapToIndices } from '$lib/loop/quantize';
@@ -214,6 +215,10 @@
 		duration = 0;
 		errorMessage = null;
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) loadFile(handoffFile);
 </script>
 
 <svelte:head>

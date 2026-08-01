@@ -3,6 +3,7 @@
 	import { apps } from '$lib/apps';
 	import { resolve } from '$app/paths';
 	import { matchToolsForFile, type FileMatch } from '$lib/fileRouting';
+	import { setPendingFile } from '$lib/fileHandoff';
 
 	const tags = ['All', ...new Set(apps.map((app) => app.tag))];
 
@@ -120,7 +121,7 @@
 				</p>
 				<div class="hub-listing">
 					{#each hubMatch.apps as app (app.slug)}
-						<AppCard {app} />
+						<AppCard {app} onclick={() => hubFile && setPendingFile(hubFile)} />
 					{/each}
 				</div>
 			{:else}

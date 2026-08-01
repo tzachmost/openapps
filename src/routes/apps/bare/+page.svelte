@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { parseJpegMetadata, stripJpegMetadata, type MetadataField } from '$lib/bare/exif';
 	import { formatBytes } from '$lib/format';
 
@@ -160,6 +161,10 @@
 		const files = Array.from(event.clipboardData?.files ?? []);
 		if (files.length) addFiles(files);
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) addFiles([handoffFile]);
 </script>
 
 <svelte:window onpaste={onPaste} />

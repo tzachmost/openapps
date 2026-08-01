@@ -2,11 +2,11 @@
 	import { base } from '$app/paths';
 	import type { AppMeta } from '$lib/apps';
 
-	let { app }: { app: AppMeta } = $props();
+	let { app, onclick }: { app: AppMeta; onclick?: () => void } = $props();
 </script>
 
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- built from the apps manifest, not a static route literal -->
-<a class="row" href="{base}/apps/{app.slug}">
+<a class="row" href="{base}/apps/{app.slug}" {onclick}>
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- app.icon is authored in-repo, not user input -->
 	<div class="icon" aria-hidden="true">{@html app.icon}</div>
 	<div class="body">
