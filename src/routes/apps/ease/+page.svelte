@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import {
 		X_MAX,
 		X_MIN,
@@ -177,15 +179,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Ease</h1>
-		<p>
-			Drag the two handles to shape a cubic-bezier curve, watch how it feels on the track below,
-			then copy it as CSS, a JS array, or a standalone easing function.
-		</p>
-	</header>
+	<ToolHeader title="Ease">
+		Drag the two handles to shape a cubic-bezier curve, watch how it feels on the track below, then
+		copy it as CSS, a JS array, or a standalone easing function.
+	</ToolHeader>
 
 	<div class="workspace">
 		<div class="stage-wrap">
@@ -295,7 +292,7 @@
 			</p>
 		</div>
 
-		<div class="panel" aria-label="Presets">
+		<Panel class="presets-panel">
 			<p class="label">Presets</p>
 			{#each PRESET_GROUPS as group (group.label)}
 				<fieldset>
@@ -315,10 +312,10 @@
 					</div>
 				</fieldset>
 			{/each}
-		</div>
+		</Panel>
 	</div>
 
-	<div class="preview-card">
+	<Panel class="preview-card">
 		<div class="track" bind:clientWidth={trackWidth}>
 			{#key runId}
 				<div class="dot" style={animationStyle}></div>
@@ -333,22 +330,22 @@
 				<input type="checkbox" bind:checked={loop} />
 				Loop
 			</label>
-			<button class="primary" onclick={play}>{loop ? 'Restart' : 'Play'}</button>
+			<Button variant="primary" onclick={play}>{loop ? 'Restart' : 'Play'}</Button>
 		</div>
-	</div>
+	</Panel>
 
-	<div class="export">
+	<Panel class="export">
 		<code class="css-value">{cssValue}</code>
 		<div class="export-actions">
-			<button class="ghost" onclick={() => copy(`[${arrayValue.join(', ')}]`, 'Copied JS array')}>
+			<Button variant="ghost" onclick={() => copy(`[${arrayValue.join(', ')}]`, 'Copied JS array')}>
 				Copy array
-			</button>
-			<button class="ghost" onclick={() => copy(jsFunctionSource, 'Copied JS function')}>
+			</Button>
+			<Button variant="ghost" onclick={() => copy(jsFunctionSource, 'Copied JS function')}>
 				Copy JS function
-			</button>
-			<button class="primary" onclick={() => copy(cssValue, 'Copied CSS value')}>Copy CSS</button>
+			</Button>
+			<Button variant="primary" onclick={() => copy(cssValue, 'Copied CSS value')}>Copy CSS</Button>
 		</div>
-	</div>
+	</Panel>
 
 	<p class="notice" aria-live="polite">{notice ?? ''}</p>
 
@@ -378,33 +375,6 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
-	}
-
 	.workspace {
 		margin-top: 2rem;
 		display: grid;
@@ -420,8 +390,8 @@
 	}
 
 	.stage-wrap {
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		padding: clamp(1rem, 2vw, 1.5rem);
 		background: var(--bg-elevated);
 	}
@@ -525,14 +495,10 @@
 		color: var(--text-dim);
 	}
 
-	.panel {
+	:global(.presets-panel) {
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.label {
@@ -563,27 +529,29 @@
 	}
 
 	.segmented label {
-		font-size: 0.75rem;
-		padding: 0.3rem 0.55rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		padding: 0.35rem 0.65rem;
+		border: 2px solid var(--border-strong);
+		border-radius: 3px;
 		cursor: pointer;
 		color: var(--text-dim);
 		transition:
-			border-color 0.15s ease,
-			color 0.15s ease,
-			background 0.15s ease;
+			border-color 0.12s ease,
+			color 0.12s ease,
+			background 0.12s ease;
 	}
 
 	.segmented label:hover {
-		border-color: var(--border-strong);
 		color: var(--text);
 	}
 
 	.segmented label.selected {
 		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
-		color: var(--text);
+		background: var(--accent);
+		color: var(--accent-text);
 	}
 
 	.segmented input {
@@ -597,19 +565,15 @@
 		outline-offset: 2px;
 	}
 
-	.preview-card {
+	:global(.preview-card) {
 		margin-top: 1rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.track {
 		position: relative;
 		height: 2.5rem;
 		background: var(--bg);
-		border: 1px solid var(--border);
+		border: 2px solid var(--border-strong);
 		border-radius: 999px;
 	}
 
@@ -670,17 +634,13 @@
 		accent-color: var(--accent);
 	}
 
-	.export {
+	:global(.export) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 1rem;
 		margin-top: 1rem;
-		padding: 1rem 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.css-value {
@@ -695,38 +655,6 @@
 		gap: 0.5rem;
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover {
-		filter: brightness(1.05);
-	}
-
 	.notice {
 		min-height: 1.2rem;
 		margin-top: 0.6rem;
@@ -737,8 +665,8 @@
 
 	.css-preview {
 		margin-top: 1rem;
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		padding: 1rem 1.1rem;
 		background: var(--bg-elevated);
 	}

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { parseJpegMetadata, stripJpegMetadata, type MetadataField } from '$lib/bare/exif';
 	import { formatBytes } from '$lib/format';
@@ -178,16 +179,11 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Bare</h1>
-		<p>
-			Every JPEG straight off a phone or camera carries hidden metadata — sometimes an exact GPS
-			location. Bare shows you what's there, then strips it byte-for-byte, with no re-encoding and
-			no quality loss.
-		</p>
-	</header>
+	<ToolHeader title="Bare">
+		Every JPEG straight off a phone or camera carries hidden metadata — sometimes an exact GPS
+		location. Bare shows you what's there, then strips it byte-for-byte, with no re-encoding and
+		no quality loss.
+	</ToolHeader>
 
 	<div
 		class="dropzone"
@@ -229,12 +225,12 @@
 				</p>
 				<div class="actions">
 					{#if dirtyItems.length > 1 && strippedCount < dirtyItems.length}
-						<button class="ghost" onclick={stripAll}>Strip all</button>
+						<Button variant="ghost" onclick={stripAll}>Strip all</Button>
 					{/if}
 					{#if strippedCount > 1}
-						<button class="ghost" onclick={downloadAllStripped}>Download all</button>
+						<Button variant="ghost" onclick={downloadAllStripped}>Download all</Button>
 					{/if}
-					<button class="ghost" onclick={clearAll}>Clear</button>
+					<Button variant="ghost" onclick={clearAll}>Clear</Button>
 				</div>
 			</div>
 
@@ -270,17 +266,18 @@
 							<div class="row-actions">
 								{#if item.status === 'ready' && item.metadataBytes > 0}
 									{#if item.stripStatus === 'done' && item.strippedUrl}
-										<button class="ghost small" onclick={() => downloadStripped(item)}>
+										<Button variant="ghost" size="small" onclick={() => downloadStripped(item)}>
 											Download clean
-										</button>
+										</Button>
 									{:else}
-										<button
-											class="ghost small"
+										<Button
+											variant="ghost"
+											size="small"
 											disabled={item.stripStatus === 'working'}
 											onclick={() => stripItem(item.id)}
 										>
 											{item.stripStatus === 'working' ? 'Stripping…' : 'Remove metadata'}
-										</button>
+										</Button>
 									{/if}
 								{/if}
 								<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}
@@ -335,29 +332,6 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
 	.dropzone {
 		margin-top: 2rem;
 		border: 1.5px dashed var(--border-strong);
@@ -407,32 +381,6 @@
 	.actions {
 		display: flex;
 		gap: 0.5rem;
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	button.ghost.small {
-		padding: 0.35rem 0.7rem;
-		white-space: nowrap;
 	}
 
 	button.link {

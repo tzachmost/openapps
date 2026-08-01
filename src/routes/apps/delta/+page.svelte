@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { takePendingFile } from '$lib/fileHandoff';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { diffLines, wordDiff, type WordSpan } from '$lib/delta/text';
 	import { MAX_LINES, splitLines } from '$lib/delta/text';
 	import { buildRows, summarizeRows, type Row } from '$lib/delta/rows';
@@ -116,16 +118,11 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Delta</h1>
-		<p>
-			Paste or drop two versions of any text — code, config, prose — and Delta computes a real
-			line-by-line diff (Myers' algorithm, not a naive comparison) with word-level highlights on
-			changed lines. Runs entirely on your device.
-		</p>
-	</header>
+	<ToolHeader title="Delta">
+		Paste or drop two versions of any text — code, config, prose — and Delta computes a real
+		line-by-line diff (Myers' algorithm, not a naive comparison) with word-level highlights on
+		changed lines. Runs entirely on your device.
+	</ToolHeader>
 
 	<section class="editors-section">
 		<div class="editors">
@@ -133,7 +130,9 @@
 				<div class="panel-header">
 					<span>Original</span>
 					<div class="panel-actions">
-						<button class="ghost small" onclick={() => leftFileInput?.click()}>Upload</button>
+						<Button variant="ghost" size="small" onclick={() => leftFileInput?.click()}
+							>Upload</Button
+						>
 						<input
 							bind:this={leftFileInput}
 							type="file"
@@ -160,7 +159,9 @@
 				<div class="panel-header">
 					<span>Modified</span>
 					<div class="panel-actions">
-						<button class="ghost small" onclick={() => rightFileInput?.click()}>Upload</button>
+						<Button variant="ghost" size="small" onclick={() => rightFileInput?.click()}
+							>Upload</Button
+						>
 						<input
 							bind:this={rightFileInput}
 							type="file"
@@ -180,8 +181,8 @@
 		</div>
 
 		<div class="diff-actions">
-			<button class="link" onclick={loadSample}>Load sample</button>
-			<button class="link" onclick={clearBoth}>Clear both</button>
+			<Button variant="ghost" size="small" onclick={loadSample}>Load sample</Button>
+			<Button variant="ghost" size="small" onclick={clearBoth}>Clear both</Button>
 		</div>
 	</section>
 
@@ -205,22 +206,30 @@
 					<span class="summary-chip changed">~{stats.changed} changed</span>
 				</div>
 				<div class="toolbar-group">
-					<div class="segmented" role="group" aria-label="View">
-						<button class:active={viewMode === 'split'} onclick={() => (viewMode = 'split')}
-							>Split</button
+					<Segmented
+						compact
+						label="View"
+						bind:value={viewMode}
+						options={[
+							{ value: 'split', label: 'Split' },
+							{ value: 'unified', label: 'Unified' }
+						]}
+					/>
+					<div class="toggle-group" role="group" aria-label="Comparison options">
+						<Button
+							variant={ignoreWhitespace ? 'primary' : 'ghost'}
+							size="small"
+							onclick={() => (ignoreWhitespace = !ignoreWhitespace)}
 						>
-						<button class:active={viewMode === 'unified'} onclick={() => (viewMode = 'unified')}
-							>Unified</button
+							Ignore whitespace
+						</Button>
+						<Button
+							variant={ignoreCase ? 'primary' : 'ghost'}
+							size="small"
+							onclick={() => (ignoreCase = !ignoreCase)}
 						>
-					</div>
-					<div class="segmented" role="group" aria-label="Comparison options">
-						<button
-							class:active={ignoreWhitespace}
-							onclick={() => (ignoreWhitespace = !ignoreWhitespace)}>Ignore whitespace</button
-						>
-						<button class:active={ignoreCase} onclick={() => (ignoreCase = !ignoreCase)}
-							>Ignore case</button
-						>
+							Ignore case
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -307,8 +316,10 @@
 
 			<div class="patch-actions">
 				<span class="patch-label">Unified diff</span>
-				<button class="ghost small" onclick={copyPatch}>{patchCopied ? 'Copied!' : 'Copy'}</button>
-				<button class="ghost small" onclick={downloadPatch}>Download .patch</button>
+				<Button variant="ghost" size="small" onclick={copyPatch}>
+					{patchCopied ? 'Copied!' : 'Copy'}
+				</Button>
+				<Button variant="ghost" size="small" onclick={downloadPatch}>Download .patch</Button>
 			</div>
 		{/if}
 	{/if}
@@ -328,30 +339,6 @@
 			--diff-add: #4bb87e;
 			--diff-changed: #d9a63d;
 		}
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		max-width: 42rem;
-		color: var(--text-dim);
-		line-height: 1.5;
 	}
 
 	.editors-section {
@@ -485,64 +472,11 @@
 		flex-wrap: wrap;
 	}
 
-	.segmented {
+	.toggle-group {
 		display: flex;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		overflow: hidden;
-	}
-
-	.segmented button {
-		font: inherit;
-		font-size: 0.75rem;
-		padding: 0.4rem 0.65rem;
-		border: none;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-		white-space: nowrap;
-	}
-
-	.segmented button.active {
-		background: var(--accent);
-		color: var(--accent-text);
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.35rem 0.7rem;
-		white-space: nowrap;
-	}
-
-	button.link {
-		font: inherit;
-		font-size: 0.8rem;
-		background: none;
-		border: none;
-		padding: 0;
-		color: var(--text-dim);
-		text-decoration: underline;
-		text-underline-offset: 2px;
-		cursor: pointer;
-	}
-
-	button.link:hover {
-		color: var(--text);
+		align-items: center;
+		gap: 0.4rem;
+		flex-wrap: wrap;
 	}
 
 	.summary-chip {

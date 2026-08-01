@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { SvelteSet } from 'svelte/reactivity';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import JsonNode from '$lib/components/JsonNode.svelte';
 	import { formatBytes } from '$lib/format';
 	import {
@@ -163,19 +165,20 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
+	<ToolHeader title="Sift">
+		Paste JSON to format, validate, and explore it as a collapsible tree — or switch to Diff to
+		compare two versions structurally, key by key. Everything runs on your device.
+	</ToolHeader>
 
-	<header class="intro">
-		<h1>Sift</h1>
-		<p>
-			Paste JSON to format, validate, and explore it as a collapsible tree — or switch to Diff to
-			compare two versions structurally, key by key. Everything runs on your device.
-		</p>
-	</header>
-
-	<div class="mode-toggle" role="group" aria-label="Mode">
-		<button class:active={mode === 'format'} onclick={() => (mode = 'format')}>Format</button>
-		<button class:active={mode === 'diff'} onclick={() => (mode = 'diff')}>Diff</button>
+	<div class="mode-row">
+		<Segmented
+			label="Mode"
+			bind:value={mode}
+			options={[
+				{ value: 'format', label: 'Format' },
+				{ value: 'diff', label: 'Diff' }
+			]}
+		/>
 	</div>
 
 	{#if mode === 'format'}
@@ -185,10 +188,11 @@
 					<span>Input</span>
 					<div class="panel-actions">
 						{#if formatInput.trim() !== ''}
-							<button class="link" onclick={clearFormat}>Clear</button>
+							<Button variant="ghost" size="small" onclick={clearFormat}>Clear</Button>
 						{/if}
-						<button class="link" onclick={loadFormatSample}>Load sample</button>
-						<button class="ghost small" onclick={() => formatFileInput?.click()}>Upload file</button
+						<Button variant="ghost" size="small" onclick={loadFormatSample}>Load sample</Button>
+						<Button variant="ghost" size="small" onclick={() => formatFileInput?.click()}
+							>Upload file</Button
 						>
 						<input
 							bind:this={formatFileInput}
@@ -225,25 +229,36 @@
 						</span>
 					</div>
 					<div class="toolbar-group">
-						<div class="segmented" role="group" aria-label="Indent size">
-							<button class:active={indent === '2'} onclick={() => (indent = '2')}>2</button>
-							<button class:active={indent === '4'} onclick={() => (indent = '4')}>4</button>
-							<button class:active={indent === 'tab'} onclick={() => (indent = 'tab')}>Tab</button>
-						</div>
-						<button class="ghost small" onclick={prettify}>Prettify</button>
-						<button class="ghost small" onclick={minify}>Minify</button>
-						<button class="ghost small" onclick={copyFormatted}
-							>{formatCopied ? 'Copied!' : 'Copy'}</button
-						>
-						<button class="ghost small" onclick={downloadFormatted}>Download</button>
+						<Segmented
+							compact
+							label="Indent size"
+							bind:value={indent}
+							options={[
+								{ value: '2', label: '2' },
+								{ value: '4', label: '4' },
+								{ value: 'tab', label: 'Tab' }
+							]}
+						/>
+						<Button variant="ghost" size="small" onclick={prettify}>Prettify</Button>
+						<Button variant="ghost" size="small" onclick={minify}>Minify</Button>
+						<Button variant="ghost" size="small" onclick={copyFormatted}>
+							{formatCopied ? 'Copied!' : 'Copy'}
+						</Button>
+						<Button variant="ghost" size="small" onclick={downloadFormatted}>Download</Button>
 					</div>
 				</div>
 
 				<div class="tree-header">
-					<button class="link" onclick={() => formatCollapsed.clear()}>Expand all</button>
-					<button class="link" onclick={() => collapseAll(formatTree, formatCollapsed)}>
+					<Button variant="ghost" size="small" onclick={() => formatCollapsed.clear()}
+						>Expand all</Button
+					>
+					<Button
+						variant="ghost"
+						size="small"
+						onclick={() => collapseAll(formatTree, formatCollapsed)}
+					>
 						Collapse all
-					</button>
+					</Button>
 				</div>
 				<div class="tree-panel">
 					<JsonNode node={formatTree} path="" depth={0} collapsed={formatCollapsed} />
@@ -257,7 +272,9 @@
 					<div class="panel-header">
 						<span>Original</span>
 						<div class="panel-actions">
-							<button class="ghost small" onclick={() => leftFileInput?.click()}>Upload</button>
+							<Button variant="ghost" size="small" onclick={() => leftFileInput?.click()}
+								>Upload</Button
+							>
 							<input
 								bind:this={leftFileInput}
 								type="file"
@@ -290,7 +307,9 @@
 					<div class="panel-header">
 						<span>Modified</span>
 						<div class="panel-actions">
-							<button class="ghost small" onclick={() => rightFileInput?.click()}>Upload</button>
+							<Button variant="ghost" size="small" onclick={() => rightFileInput?.click()}
+								>Upload</Button
+							>
 							<input
 								bind:this={rightFileInput}
 								type="file"
@@ -315,8 +334,8 @@
 			</div>
 
 			<div class="diff-actions">
-				<button class="link" onclick={loadDiffSample}>Load sample</button>
-				<button class="link" onclick={clearDiff}>Clear both</button>
+				<Button variant="ghost" size="small" onclick={loadDiffSample}>Load sample</Button>
+				<Button variant="ghost" size="small" onclick={clearDiff}>Clear both</Button>
 			</div>
 
 			{#if leftInput.trim() === '' || rightInput.trim() === ''}
@@ -332,10 +351,16 @@
 							<span class="summary-chip changed">~{diffSummary.changed} changed</span>
 						</div>
 						<div class="toolbar-group">
-							<button class="link" onclick={() => diffCollapsed.clear()}>Expand all</button>
-							<button class="link" onclick={() => collapseAll(diffTree, diffCollapsed)}>
+							<Button variant="ghost" size="small" onclick={() => diffCollapsed.clear()}
+								>Expand all</Button
+							>
+							<Button
+								variant="ghost"
+								size="small"
+								onclick={() => collapseAll(diffTree, diffCollapsed)}
+							>
 								Collapse all
-							</button>
+							</Button>
 						</div>
 					</div>
 					<div class="tree-panel">
@@ -363,55 +388,8 @@
 		}
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		max-width: 42rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
-	.mode-toggle {
-		display: inline-flex;
-		gap: 0.25rem;
+	.mode-row {
 		margin-top: 1.5rem;
-		padding: 0.25rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
-	}
-
-	.mode-toggle button {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.4rem 1.1rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.mode-toggle button.active {
-		background: var(--accent);
-		color: var(--accent-text);
 	}
 
 	.format,
@@ -533,65 +511,6 @@
 	.stats {
 		font-size: 0.8rem;
 		color: var(--text-dim);
-	}
-
-	.segmented {
-		display: flex;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		overflow: hidden;
-	}
-
-	.segmented button {
-		font: inherit;
-		font-size: 0.75rem;
-		padding: 0.4rem 0.65rem;
-		border: none;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.segmented button.active {
-		background: var(--accent);
-		color: var(--accent-text);
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.35rem 0.7rem;
-		white-space: nowrap;
-	}
-
-	button.link {
-		font: inherit;
-		font-size: 0.8rem;
-		background: none;
-		border: none;
-		padding: 0;
-		color: var(--text-dim);
-		text-decoration: underline;
-		text-underline-offset: 2px;
-		cursor: pointer;
-	}
-
-	button.link:hover {
-		color: var(--text);
 	}
 
 	.tree-header {

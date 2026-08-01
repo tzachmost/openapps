@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import { loadSavedZones, saveZones } from '$lib/meridian/storage';
 	import {
 		daySegments,
@@ -200,15 +202,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Meridian</h1>
-		<p>
-			Add the places that matter, then drag across the day to see what time it is everywhere at once
-			— and where the daylight actually overlaps.
-		</p>
-	</header>
+	<ToolHeader title="Meridian">
+		Add the places that matter, then drag across the day to see what time it is everywhere at once
+		— and where the daylight actually overlaps.
+	</ToolHeader>
 
 	{#if homeZone === ''}
 		<p class="hint loading">Reading your timezone…</p>
@@ -251,21 +248,25 @@
 					<button class:active={use24h} onclick={() => (use24h = true)}>24h</button>
 				</div>
 				{#if !following}
-					<button class="ghost small" onclick={() => (following = true)}>Jump to now</button>
+					<Button variant="ghost" size="small" onclick={() => (following = true)}
+						>Jump to now</Button
+					>
 				{/if}
-				<button class="ghost small" onclick={copySummary} disabled={rows.length === 0}>
+				<Button variant="ghost" size="small" onclick={copySummary} disabled={rows.length === 0}>
 					Copy times
-				</button>
+				</Button>
 			</div>
 		</div>
 
 		{#if rows.length === 0}
 			<div class="empty">
 				<p>No timezones added yet.</p>
-				<button class="ghost small" onclick={() => addZone(homeZone)}>Add my timezone</button>
+				<Button variant="ghost" size="small" onclick={() => addZone(homeZone)}
+					>Add my timezone</Button
+				>
 			</div>
 		{:else}
-			<div class="board">
+			<Panel class="board">
 				<div class="grid-wrap">
 					<div class="ruler-spacer" aria-hidden="true"></div>
 					<div class="ruler" aria-hidden="true">
@@ -330,7 +331,7 @@
 						<div class="cursor" style:left="{(cursorFrac / 24) * 100}%"></div>
 					</div>
 				</div>
-			</div>
+			</Panel>
 			<p class="note">
 				Drag anywhere on the strip (or focus it and use the arrow keys) to preview a different time.
 				Bands run light-to-dark from daytime to night in each place's own local hours.
@@ -346,33 +347,6 @@
 		max-width: 52rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
 	}
 
 	.hint.loading {
@@ -401,8 +375,8 @@
 		font: inherit;
 		font-size: 0.85rem;
 		padding: 0.55rem 0.85rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		background: var(--bg-elevated);
 		color: var(--text);
 	}
@@ -422,9 +396,9 @@
 		padding: 0.35rem;
 		list-style: none;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border-strong);
-		border-radius: 12px;
-		box-shadow: var(--shadow);
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
+		box-shadow: var(--shadow-hard);
 		max-height: 16rem;
 		overflow-y: auto;
 	}
@@ -470,55 +444,36 @@
 
 	.hour-toggle {
 		display: inline-flex;
-		gap: 0.2rem;
-		padding: 0.2rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
+		gap: 0.3rem;
 	}
 
 	.hour-toggle button {
-		font: inherit;
-		font-size: 0.75rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
 		font-weight: 600;
-		padding: 0.3rem 0.7rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		padding: 0.4rem 0.75rem;
+		border: 2px solid var(--border-strong);
+		border-radius: 3px;
+		background: var(--bg-elevated);
 		color: var(--text-dim);
 		cursor: pointer;
+		transition:
+			color 0.12s ease,
+			background-color 0.12s ease,
+			border-color 0.12s ease;
+	}
+
+	.hour-toggle button:hover:not(.active) {
+		color: var(--text);
+		border-color: var(--text-dim);
 	}
 
 	.hour-toggle button.active {
 		background: var(--accent);
+		border-color: var(--accent);
 		color: var(--accent-text);
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover:not(:disabled) {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.3rem 0.75rem;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-
-	button.ghost:disabled {
-		opacity: 0.45;
-		cursor: not-allowed;
 	}
 
 	.empty {
@@ -526,7 +481,7 @@
 		padding: 2rem;
 		text-align: center;
 		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
+		border-radius: 4px;
 		color: var(--text-dim);
 	}
 
@@ -534,12 +489,9 @@
 		margin-bottom: 0.75rem;
 	}
 
-	.board {
+	:global(.board) {
 		margin-top: 1.5rem;
 		padding: 1.1rem clamp(0.85rem, 3vw, 1.4rem);
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
 	}
 
 	.grid-wrap {

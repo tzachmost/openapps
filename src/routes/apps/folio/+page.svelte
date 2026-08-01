@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { renderMarkdown } from '$lib/folio/markdown';
 	import { buildStandaloneDocument } from '$lib/folio/document';
@@ -101,24 +102,21 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Folio</h1>
-		<p>
+	<div class="header-block">
+		<ToolHeader title="Folio">
 			Write Markdown on the left, watch it typeset on the right. When it's ready, download it as a
 			self-contained HTML file or print it straight to PDF — nothing ever leaves your browser.
-		</p>
-	</header>
+		</ToolHeader>
+	</div>
 
 	<div class="toolbar">
 		<div class="toolbar-group">
 			<span class="stats">{wordCount} word{wordCount === 1 ? '' : 's'}</span>
 		</div>
 		<div class="toolbar-group">
-			<button class="link" onclick={loadSample}>Load sample</button>
-			<button class="link" onclick={clear}>Clear</button>
-			<button class="ghost small" onclick={() => fileInput?.click()}>Upload .md</button>
+			<Button variant="ghost" size="small" onclick={loadSample}>Load sample</Button>
+			<Button variant="ghost" size="small" onclick={clear}>Clear</Button>
+			<Button variant="ghost" size="small" onclick={() => fileInput?.click()}>Upload .md</Button>
 			<input
 				bind:this={fileInput}
 				type="file"
@@ -126,10 +124,12 @@
 				class="visually-hidden"
 				onchange={onFilePick}
 			/>
-			<button class="ghost small" onclick={downloadMarkdown}>Download .md</button>
-			<button class="ghost small" onclick={copyHtml}>{copied ? 'Copied!' : 'Copy HTML'}</button>
-			<button class="ghost small" onclick={downloadHtml}>Download HTML</button>
-			<button class="primary small" onclick={printDocument}>Print / Save as PDF</button>
+			<Button variant="ghost" size="small" onclick={downloadMarkdown}>Download .md</Button>
+			<Button variant="ghost" size="small" onclick={copyHtml}
+				>{copied ? 'Copied!' : 'Copy HTML'}</Button
+			>
+			<Button variant="ghost" size="small" onclick={downloadHtml}>Download HTML</Button>
+			<Button variant="primary" size="small" onclick={printDocument}>Print / Save as PDF</Button>
 		</div>
 	</div>
 
@@ -169,30 +169,6 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		max-width: 42rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
 	.toolbar {
 		display: flex;
 		flex-wrap: wrap;
@@ -216,57 +192,6 @@
 		color: var(--text-dim);
 	}
 
-	.link {
-		font: inherit;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: pointer;
-		text-decoration: underline;
-		text-underline-offset: 2px;
-	}
-
-	.link:hover {
-		color: var(--text);
-	}
-
-	.ghost,
-	.primary {
-		font: inherit;
-		font-size: 0.82rem;
-		font-weight: 600;
-		border-radius: 8px;
-		cursor: pointer;
-		white-space: nowrap;
-	}
-
-	.ghost.small,
-	.primary.small {
-		padding: 0.4rem 0.75rem;
-	}
-
-	.ghost {
-		background: var(--bg-elevated);
-		color: var(--text);
-		border: 1px solid var(--border);
-	}
-
-	.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	.primary {
-		background: var(--accent);
-		color: var(--accent-text);
-		border: 1px solid var(--accent);
-	}
-
-	.primary:hover {
-		filter: brightness(1.06);
-	}
-
 	.split {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -281,10 +206,9 @@
 	}
 
 	.panel {
-		border: 1px solid var(--border);
-		border-radius: 12px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		background: var(--bg-elevated);
-		box-shadow: var(--shadow);
 		overflow: hidden;
 	}
 
@@ -296,7 +220,7 @@
 		font-size: 0.78rem;
 		font-weight: 600;
 		color: var(--text-dim);
-		border-bottom: 1px solid var(--border);
+		border-bottom: 2px solid var(--border-strong);
 	}
 
 	textarea {
@@ -452,8 +376,7 @@
 		:global(footer) {
 			display: none !important;
 		}
-		.back,
-		.intro,
+		.header-block,
 		.toolbar,
 		.editor-panel,
 		.panel-header {
@@ -468,7 +391,6 @@
 		}
 		.panel {
 			border: none;
-			box-shadow: none;
 			border-radius: 0;
 		}
 		.preview-panel {

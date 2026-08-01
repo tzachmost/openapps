@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
 	import {
 		hexToRgb,
 		rgbToHex,
@@ -225,18 +228,13 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
+	<ToolHeader title="Hue">
+		Pick a color to see it in every format at once, build a matching harmony, check its contrast,
+		and preview how it looks under color vision deficiencies. Nothing here touches a server — the
+		OKLab math and colorblindness simulation are hand-rolled, right down to the formulas.
+	</ToolHeader>
 
-	<header class="intro">
-		<h1>Hue</h1>
-		<p>
-			Pick a color to see it in every format at once, build a matching harmony, check its contrast,
-			and preview how it looks under color vision deficiencies. Nothing here touches a server — the
-			OKLab math and colorblindness simulation are hand-rolled, right down to the formulas.
-		</p>
-	</header>
-
-	<div class="picker panel">
+	<Panel class="picker">
 		<div class="picker-controls">
 			<div
 				class="sv-square"
@@ -303,27 +301,27 @@
 				</button>
 			{/each}
 		</div>
-	</div>
+	</Panel>
 
-	<div class="mode-toggle" role="group" aria-label="Section">
-		<button class:active={mode === 'harmonies'} onclick={() => (mode = 'harmonies')}
-			>Harmonies</button
-		>
-		<button class:active={mode === 'accessibility'} onclick={() => (mode = 'accessibility')}
-			>Accessibility</button
-		>
+	<div class="mode-toggle">
+		<Segmented
+			label="Section"
+			bind:value={mode}
+			options={[
+				{ value: 'harmonies', label: 'Harmonies' },
+				{ value: 'accessibility', label: 'Accessibility' }
+			]}
+		/>
 	</div>
 
 	{#if mode === 'harmonies'}
-		<section class="panel">
-			<div class="segmented">
-				{#each HARMONY_TYPES as type (type)}
-					<label class:selected={harmonyType === type}>
-						<input type="radio" bind:group={harmonyType} value={type} />
-						{HARMONY_LABELS[type]}
-					</label>
-				{/each}
-			</div>
+		<Panel class="harmonies-panel">
+			<Segmented
+				compact
+				label="Harmony type"
+				bind:value={harmonyType}
+				options={HARMONY_TYPES.map((type) => ({ value: type, label: HARMONY_LABELS[type] }))}
+			/>
 
 			<div class="swatch-grid">
 				{#each palette as swatch (swatch.label + swatch.hex)}
@@ -339,12 +337,12 @@
 				{/each}
 			</div>
 
-			<button class="ghost" onclick={copyPaletteCss}>
+			<Button variant="ghost" style="margin-top: 1rem;" onclick={copyPaletteCss}>
 				{copiedPaletteCss ? 'Copied!' : 'Copy palette as CSS variables'}
-			</button>
-		</section>
+			</Button>
+		</Panel>
 	{:else}
-		<section class="panel accessibility">
+		<Panel class="harmonies-panel accessibility">
 			<div class="pair-fields">
 				<div class="field">
 					<span class="field-label">Text</span>
@@ -361,11 +359,13 @@
 						onchange={commitFg}
 						aria-label="Text hex value"
 					/>
-					<button class="ghost tiny" onclick={() => (fg = baseHex)}>Use picker color</button>
+					<Button variant="ghost" size="small" onclick={() => (fg = baseHex)}>Use picker color</Button>
 				</div>
-				<button class="ghost swap" onclick={swapFgBg} aria-label="Swap text and background"
-					>⇅</button
-				>
+				<div class="swap">
+					<Button variant="ghost" size="small" onclick={swapFgBg} aria-label="Swap text and background"
+						>⇅</Button
+					>
+				</div>
 				<div class="field">
 					<span class="field-label">Background</span>
 					<label class="swatch-picker small" style:background={bg}>
@@ -381,7 +381,7 @@
 						onchange={commitBg}
 						aria-label="Background hex value"
 					/>
-					<button class="ghost tiny" onclick={() => (bg = baseHex)}>Use picker color</button>
+					<Button variant="ghost" size="small" onclick={() => (bg = baseHex)}>Use picker color</Button>
 				</div>
 			</div>
 
@@ -424,7 +424,7 @@
 					</div>
 				{/each}
 			</div>
-		</section>
+		</Panel>
 	{/if}
 </div>
 
@@ -435,36 +435,9 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-		max-width: 40rem;
-	}
-
-	.panel {
+	:global(.picker),
+	:global(.harmonies-panel) {
 		margin-top: 1.5rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 14px;
 	}
 
 	/* --- picker --- */
@@ -650,72 +623,13 @@
 		white-space: nowrap;
 	}
 
-	/* --- mode toggle (shared visual language with Sift/Seal/Ward) --- */
+	/* --- mode toggle --- */
 
 	.mode-toggle {
-		display: inline-flex;
-		gap: 0.25rem;
 		margin-top: 1.5rem;
-		padding: 0.25rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
-	}
-
-	.mode-toggle button {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.4rem 1.1rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.mode-toggle button.active {
-		background: var(--accent);
-		color: var(--accent-text);
 	}
 
 	/* --- harmonies --- */
-
-	.segmented {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.3rem;
-	}
-
-	.segmented label {
-		font-size: 0.75rem;
-		padding: 0.35rem 0.6rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.segmented label:hover {
-		border-color: var(--border-strong);
-		color: var(--text);
-	}
-
-	.segmented label.selected {
-		border-color: var(--accent);
-		color: var(--text);
-		background: var(--bg);
-	}
-
-	.segmented input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
 
 	.swatch-grid {
 		margin-top: 1rem;
@@ -749,32 +663,6 @@
 		font-weight: 600;
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.82rem;
-		font-weight: 600;
-		padding: 0.5rem 1rem;
-		border-radius: 10px;
-		cursor: pointer;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.tiny {
-		padding: 0.3rem 0.6rem;
-		font-size: 0.72rem;
-		white-space: nowrap;
-	}
-
-	.swatch-grid + button.ghost {
-		margin-top: 1rem;
-	}
-
 	/* --- accessibility --- */
 
 	.pair-fields {
@@ -804,7 +692,6 @@
 
 	.swap {
 		flex-shrink: 0;
-		padding: 0.5rem 0.7rem;
 		align-self: center;
 	}
 

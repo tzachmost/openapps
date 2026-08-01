@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
 	import { formatBytes } from '$lib/format';
 	import { ALGORITHMS, hashBytes, parseExpectedHash, type Digests } from '$lib/seal/hash';
 
@@ -173,19 +175,20 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
+	<ToolHeader title="Seal">
+		Compute a file or a piece of text's checksum across five algorithms, and check it against one
+		you were given. Everything is hashed on your device — nothing is ever uploaded.
+	</ToolHeader>
 
-	<header class="intro">
-		<h1>Seal</h1>
-		<p>
-			Compute a file or a piece of text's checksum across five algorithms, and check it against one
-			you were given. Everything is hashed on your device — nothing is ever uploaded.
-		</p>
-	</header>
-
-	<div class="mode-toggle" role="group" aria-label="Mode">
-		<button class:active={mode === 'text'} onclick={() => (mode = 'text')}>Text</button>
-		<button class:active={mode === 'files'} onclick={() => (mode = 'files')}>Files</button>
+	<div class="mode-row">
+		<Segmented
+			label="Mode"
+			bind:value={mode}
+			options={[
+				{ value: 'text', label: 'Text' },
+				{ value: 'files', label: 'Files' }
+			]}
+		/>
 	</div>
 
 	{#if mode === 'text'}
@@ -194,7 +197,7 @@
 				<div class="panel-header">
 					<span>Input</span>
 					{#if textInput !== ''}
-						<button class="link" onclick={() => (textInput = '')}>Clear</button>
+						<Button variant="ghost" size="small" onclick={() => (textInput = '')}>Clear</Button>
 					{/if}
 				</div>
 				<textarea
@@ -211,13 +214,14 @@
 						<div class="digest-row">
 							<span class="algo">{algorithm}</span>
 							<code>{textDigests?.[algorithm] ?? '…'}</code>
-							<button
-								class="link"
+							<Button
+								variant="ghost"
+								size="small"
 								disabled={!textDigests}
 								onclick={() => textDigests && copyHash(`text-${algorithm}`, textDigests[algorithm])}
 							>
 								{copiedKey === `text-${algorithm}` ? 'Copied!' : 'Copy'}
-							</button>
+							</Button>
 						</div>
 					{/each}
 				</div>
@@ -276,7 +280,7 @@
 			{#if items.length > 0}
 				<div class="results-header">
 					<p>{items.length} file{items.length === 1 ? '' : 's'}</p>
-					<button class="ghost" onclick={clearAll}>Clear</button>
+					<Button variant="ghost" size="small" onclick={clearAll}>Clear</Button>
 				</div>
 
 				<ul>
@@ -312,18 +316,21 @@
 								<div class="digest-row">
 									<span class="algo">SHA-256</span>
 									<code>{item.digests['SHA-256']}</code>
-									<button
-										class="link"
+									<Button
+										variant="ghost"
+										size="small"
 										onclick={() =>
 											item.digests && copyHash(`${item.id}-SHA-256`, item.digests['SHA-256'])}
 									>
 										{copiedKey === `${item.id}-SHA-256` ? 'Copied!' : 'Copy'}
-									</button>
+									</Button>
 								</div>
 
-								<button class="link show-all" onclick={() => (item.showAll = !item.showAll)}>
-									{item.showAll ? 'Hide other formats' : 'Show MD5, SHA-1, SHA-384, SHA-512'}
-								</button>
+								<div class="show-all">
+									<Button variant="ghost" size="small" onclick={() => (item.showAll = !item.showAll)}>
+										{item.showAll ? 'Hide other formats' : 'Show MD5, SHA-1, SHA-384, SHA-512'}
+									</Button>
+								</div>
 
 								{#if item.showAll}
 									<div class="digest-table nested">
@@ -331,14 +338,15 @@
 											<div class="digest-row">
 												<span class="algo">{algorithm}</span>
 												<code>{item.digests[algorithm]}</code>
-												<button
-													class="link"
+												<Button
+													variant="ghost"
+													size="small"
 													onclick={() =>
 														item.digests &&
 														copyHash(`${item.id}-${algorithm}`, item.digests[algorithm])}
 												>
 													{copiedKey === `${item.id}-${algorithm}` ? 'Copied!' : 'Copy'}
-												</button>
+												</Button>
 											</div>
 										{/each}
 									</div>
@@ -384,54 +392,8 @@
 		}
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
-	.mode-toggle {
-		display: inline-flex;
-		gap: 0.25rem;
+	.mode-row {
 		margin-top: 1.5rem;
-		padding: 0.25rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
-	}
-
-	.mode-toggle button {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.4rem 1.1rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.mode-toggle button.active {
-		background: var(--accent);
-		color: var(--accent-text);
 	}
 
 	.text-mode,
@@ -443,8 +405,8 @@
 		display: flex;
 		flex-direction: column;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 14px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		overflow: hidden;
 	}
 
@@ -454,7 +416,7 @@
 		justify-content: space-between;
 		gap: 0.5rem;
 		padding: 0.6rem 0.9rem;
-		border-bottom: 1px solid var(--border);
+		border-bottom: 2px solid var(--border-strong);
 		font-size: 0.75rem;
 		font-weight: 600;
 		text-transform: uppercase;
@@ -508,8 +470,8 @@
 		gap: 0.6rem;
 		padding: 0.5rem 0.7rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 10px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.digest-row .algo {
@@ -539,8 +501,8 @@
 		width: 100%;
 		padding: 0.6rem 0.8rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 10px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		color: var(--text);
 		font-family: var(--font-mono);
 		font-size: 0.82rem;
@@ -605,43 +567,6 @@
 		color: var(--text-dim);
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.link {
-		font: inherit;
-		font-size: 0.78rem;
-		background: none;
-		border: none;
-		padding: 0;
-		color: var(--text-dim);
-		text-decoration: underline;
-		text-underline-offset: 2px;
-		cursor: pointer;
-	}
-
-	button.link:hover {
-		color: var(--text);
-	}
-
-	button.link:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
 	.show-all {
 		display: inline-block;
 		margin-top: 0.6rem;
@@ -659,8 +584,8 @@
 	li {
 		padding: 0.75rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 12px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.row {
