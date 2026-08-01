@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import {
 		compressImage,
@@ -14,7 +16,7 @@
 		file: File;
 		previewUrl: string;
 		originalSize: number;
-		status: 'processing' | 'done' | 'error';
+		status: 'pending' | 'processing' | 'done' | 'error';
 		outputUrl?: string;
 		outputSize?: number;
 		outputName?: string;
@@ -29,6 +31,13 @@
 		{ label: 'Fit within 1920px', value: 1920 },
 		{ label: 'Fit within 1280px', value: 1280 },
 		{ label: 'Fit within 800px', value: 800 }
+	];
+
+	const FORMAT_CHOICES: { value: OutputFormat; label: string }[] = [
+		{ value: 'auto', label: 'Auto' },
+		{ value: 'image/jpeg', label: 'JPEG' },
+		{ value: 'image/webp', label: 'WebP' },
+		{ value: 'image/png', label: 'PNG' }
 	];
 
 	let items = $state<ImageItem[]>([]);
@@ -47,8 +56,16 @@
 			? Math.round((1 - totalOutput / totalOriginal) * 100)
 			: null
 	);
-
-	let reprocessTimer: ReturnType<typeof setTimeout> | undefined;
+	// The biggest file is the most representative one to estimate against — it's the one
+	// most likely to actually matter for the format/quality decision.
+	const representativeItem = $derived<ImageItem | null>(
+		items.length === 0 ? null : items.reduce((a, b) => (b.originalSize > a.originalSize ? b : a))
+	);
+	const autoResolvedLabel = $derived(
+		representativeItem
+			? `Auto (stays ${extensionFor(resolveFormat(representativeItem.file.type, 'auto')).toUpperCase()})`
+			: 'Auto'
+	);
 
 	async function runWithLimit<T>(list: T[], limit: number, task: (item: T) => Promise<void>) {
 		let cursor = 0;
@@ -99,6 +116,10 @@
 		}
 	}
 
+	// Deliberately not automatic: dropping a file only adds it to the list. Compressing —
+	// the step that actually produces a converted/resized artifact — needs an explicit click,
+	// so settings can be reviewed (or more files added) first rather than being decided the
+	// instant a file lands.
 	function addFiles(fileList: FileList | File[]) {
 		const files = Array.from(fileList).filter((file) => file.type.startsWith('image/'));
 		const newItems: ImageItem[] = files.map((file) => ({
@@ -106,34 +127,69 @@
 			file,
 			previewUrl: URL.createObjectURL(file),
 			originalSize: file.size,
-			status: 'processing'
+			status: 'pending'
 		}));
 		items = [...items, ...newItems];
+	}
+
+	// Re-processes every item currently in the list with the current settings — including
+	// ones already marked "done", if the user changed format/quality/size after an earlier
+	// compress and wants to redo it. Nothing reprocesses on its own.
+	function compressAll() {
+		if (items.length === 0) return;
 		runWithLimit(
-			newItems.map((item) => item.id),
+			items.map((item) => item.id),
 			3,
 			processItem
 		);
 	}
 
-	function scheduleReprocess() {
-		if (reprocessTimer) clearTimeout(reprocessTimer);
-		reprocessTimer = setTimeout(() => {
-			if (items.length > 0)
-				runWithLimit(
-					items.map((item) => item.id),
-					3,
-					processItem
-				);
-		}, 250);
+	// --- Per-format size estimate: read-only preview info, not a produced artifact, so this
+	// one *does* update live as settings change — same "instant preview" the rest of the site
+	// uses everywhere except the actual compress step above.
+	let estimates = $state<Partial<Record<OutputFormat, number | null>>>({});
+	let estimating = $state(false);
+	let estimateTimer: ReturnType<typeof setTimeout> | undefined;
+	let estimateRunId = 0;
+
+	async function runEstimate() {
+		const item = representativeItem;
+		if (!item) {
+			estimates = {};
+			return;
+		}
+		const runId = ++estimateRunId;
+		estimating = true;
+		const results = await Promise.all(
+			FORMAT_CHOICES.map(async ({ value }) => {
+				try {
+					const result = await compressImage(item.file, {
+						format: value,
+						quality,
+						maxDimension: maxDimension || null
+					});
+					URL.revokeObjectURL(result.url);
+					return [value, result.blob.size] as const;
+				} catch {
+					return [value, null] as const;
+				}
+			})
+		);
+		if (runId !== estimateRunId) return; // a newer estimate superseded this one
+		estimates = Object.fromEntries(results);
+		estimating = false;
+	}
+
+	function scheduleEstimate() {
+		if (estimateTimer) clearTimeout(estimateTimer);
+		estimateTimer = setTimeout(runEstimate, 200);
 	}
 
 	$effect(() => {
-		// Track settings; re-run compression shortly after they settle.
-		void format;
+		void representativeItem;
 		void quality;
 		void maxDimension;
-		scheduleReprocess();
+		scheduleEstimate();
 	});
 
 	function onDrop(event: DragEvent) {
@@ -201,14 +257,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Squish</h1>
-		<p>
-			Drop in photos, tune the quality, download smaller files. Everything stays on this device.
-		</p>
-	</header>
+	<ToolHeader title="Squish">
+		Drop in photos, tune the quality, and decide when you're ready — nothing compresses until you
+		say so. Everything stays on this device.
+	</ToolHeader>
 
 	<section class="controls" aria-label="Compression settings">
 		<label>
@@ -273,6 +325,46 @@
 	</div>
 
 	{#if items.length > 0}
+		<Panel class="estimate-panel">
+			<p class="estimate-label">
+				Estimated at this quality{#if items.length > 1}, for the largest file ({representativeItem
+						?.file.name}){/if} — a suggestion, pick whichever fits:
+			</p>
+			<div class="estimate-rows">
+				{#each FORMAT_CHOICES as choice (choice.value)}
+					{@const size = estimates[choice.value]}
+					{@const pct =
+						size != null && representativeItem
+							? Math.round((1 - size / representativeItem.originalSize) * 100)
+							: null}
+					<button
+						type="button"
+						class="estimate-row"
+						class:active={format === choice.value}
+						onclick={() => (format = choice.value)}
+					>
+						<span class="estimate-name"
+							>{choice.value === 'auto' ? autoResolvedLabel : choice.label}</span
+						>
+						<span class="estimate-size">
+							{#if estimating && size == null}
+								…
+							{:else if size != null}
+								{formatBytes(size)}
+								{#if pct !== null && pct > 0}
+									<span class="saved">−{pct}%</span>
+								{:else if pct !== null && pct < 0}
+									<span class="grown">+{-pct}% larger</span>
+								{/if}
+							{:else}
+								—
+							{/if}
+						</span>
+					</button>
+				{/each}
+			</div>
+		</Panel>
+
 		<section class="results">
 			<div class="results-header">
 				<p>
@@ -287,10 +379,13 @@
 					{/if}
 				</p>
 				<div class="actions">
+					<Button variant="primary" size="small" onclick={compressAll}>
+						Compress {items.length} image{items.length === 1 ? '' : 's'}
+					</Button>
 					{#if doneItems.length > 1}
-						<button class="ghost" onclick={downloadAll}>Download all</button>
+						<Button variant="ghost" size="small" onclick={downloadAll}>Download all</Button>
 					{/if}
-					<button class="ghost" onclick={clearAll}>Clear</button>
+					<Button variant="ghost" size="small" onclick={clearAll}>Clear</Button>
 				</div>
 			</div>
 
@@ -300,7 +395,9 @@
 						<img src={item.previewUrl} alt="" />
 						<div class="meta">
 							<p class="name">{item.file.name}</p>
-							{#if item.status === 'processing'}
+							{#if item.status === 'pending'}
+								<p class="status">Ready — {formatBytes(item.originalSize)}</p>
+							{:else if item.status === 'processing'}
 								<p class="status">Compressing…</p>
 							{:else if item.status === 'error'}
 								<p class="status error">{item.errorMessage}</p>
@@ -321,13 +418,14 @@
 							{/if}
 						</div>
 						<div class="row-actions">
-							<button
-								class="ghost small"
+							<Button
+								variant="ghost"
+								size="small"
 								disabled={item.status !== 'done'}
 								onclick={() => downloadItem(item)}
 							>
 								Download
-							</button>
+							</Button>
 							<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}
 								>×</button
 							>
@@ -344,29 +442,6 @@
 		max-width: 42rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
 	}
 
 	.controls {
@@ -429,8 +504,64 @@
 		color: var(--text);
 	}
 
-	.results {
+	:global(.estimate-panel) {
 		margin-top: 2rem;
+	}
+
+	.estimate-label {
+		font-size: 0.82rem;
+		color: var(--text-dim);
+	}
+
+	.estimate-rows {
+		margin-top: 0.75rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+		gap: 0.5rem;
+	}
+
+	.estimate-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		align-items: flex-start;
+		font: inherit;
+		text-align: left;
+		padding: 0.6rem 0.75rem;
+		border: 2px solid var(--border);
+		border-radius: 4px;
+		background: var(--bg);
+		color: var(--text);
+		cursor: pointer;
+		transition: border-color 0.12s ease;
+	}
+
+	.estimate-row:hover {
+		border-color: var(--border-strong);
+	}
+
+	.estimate-row.active {
+		border-color: var(--accent);
+	}
+
+	.estimate-name {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--text-dim);
+	}
+
+	.estimate-row.active .estimate-name {
+		color: var(--accent);
+	}
+
+	.estimate-size {
+		font-size: 0.88rem;
+	}
+
+	.results {
+		margin-top: 1.25rem;
 	}
 
 	.results-header {
@@ -460,31 +591,6 @@
 	.actions {
 		display: flex;
 		gap: 0.5rem;
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	button.ghost.small {
-		padding: 0.35rem 0.7rem;
 	}
 
 	ul {
