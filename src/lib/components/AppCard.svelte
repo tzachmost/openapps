@@ -144,6 +144,9 @@
 			justify-content: center;
 			gap: 0.6rem;
 			aspect-ratio: 1;
+			width: 100%;
+			max-width: 10.5rem;
+			justify-self: center;
 			padding: 1rem;
 			border: 2px solid var(--border);
 			border-radius: 4px;
@@ -201,17 +204,12 @@
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 			font-size: 0.72rem;
-			max-height: 0;
-			opacity: 0;
-			transition:
-				max-height 0.18s ease,
-				opacity 0.18s ease;
+			opacity: 0.85;
 		}
 
 		.row:hover .body p,
 		.row:focus-visible .body p {
-			max-height: 2.6em;
-			opacity: 0.85;
+			opacity: 1;
 		}
 
 		.tag,
