@@ -322,6 +322,16 @@
 		border-bottom: none;
 	}
 
+	@media (min-width: 40rem) {
+		.hub-listing {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(8.5rem, 10.5rem));
+			gap: 0.75rem;
+			padding: 0.75rem;
+			border: 2px solid var(--border-strong);
+		}
+	}
+
 	.hub-reset {
 		margin-top: 1rem;
 		font-family: var(--font-mono);
@@ -343,6 +353,14 @@
 		max-width: 52rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* Room for an actual grid of tiles rather than a column of rows once there's space for it —
+	   matches AppCard's own row→tile breakpoint below. */
+	@media (min-width: 40rem) {
+		.showcase {
+			max-width: 54rem;
+		}
 	}
 
 	.controls {
@@ -477,6 +495,23 @@
 
 	.listing-body :global(.row:last-child) {
 		border-bottom: none;
+	}
+
+	/* Desktop: each tag group becomes a row of app tiles instead of a stack of list rows — see
+	   AppCard's own row→tile breakpoint (same 40rem threshold), which already gives each tile
+	   a complete border on all sides, so nothing needs restoring here. */
+	@media (min-width: 40rem) {
+		.group {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(8.5rem, 10.5rem));
+			gap: 0.85rem;
+			padding: 0.5rem 1rem 1.25rem;
+		}
+
+		.group-label {
+			grid-column: 1 / -1;
+			padding: 0.7rem 0 0.15rem;
+		}
 	}
 
 	.more {

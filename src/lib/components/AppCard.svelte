@@ -6,7 +6,7 @@
 </script>
 
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- built from the apps manifest, not a static route literal -->
-<a class="row" href="{base}/apps/{app.slug}" {onclick}>
+<a class="row" href="{base}/apps/{app.slug}" {onclick} title={app.tagline}>
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- app.icon is authored in-repo, not user input -->
 	<div class="icon" aria-hidden="true">{@html app.icon}</div>
 	<div class="body">
@@ -48,6 +48,10 @@
 		border: 1.5px solid var(--border-strong);
 		background: var(--bg);
 		color: var(--accent);
+		transition:
+			transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+			background-color 0.1s ease,
+			border-color 0.1s ease;
 	}
 
 	.row:hover .icon,
@@ -126,6 +130,92 @@
 		}
 
 		.tag {
+			display: none;
+		}
+	}
+
+	/* Desktop: reads as an app grid (icon + name, tile shape) instead of a row list — there's
+	   room to spare, and "a folder of apps" is a more honest shape for what this page actually
+	   is than a dense list once the screen is wide enough for it. Mobile keeps the row list
+	   (already dense and legible at that width) unchanged below this breakpoint. */
+	@media (min-width: 40rem) {
+		.row {
+			flex-direction: column;
+			justify-content: center;
+			gap: 0.6rem;
+			aspect-ratio: 1;
+			padding: 1rem;
+			border: 2px solid var(--border);
+			border-radius: 4px;
+			box-shadow: none;
+			transform: translate(0, 0);
+			transition:
+				background-color 0.1s ease,
+				color 0.1s ease,
+				border-color 0.12s ease,
+				box-shadow 0.15s ease,
+				transform 0.15s ease;
+		}
+
+		.row:hover,
+		.row:focus-visible {
+			border-color: var(--accent);
+			box-shadow: var(--shadow-hard);
+			transform: translate(-3px, -3px);
+		}
+
+		.icon {
+			width: 3rem;
+			height: 3rem;
+		}
+
+		.row:hover .icon,
+		.row:focus-visible .icon {
+			transform: scale(1.12) rotate(-4deg);
+		}
+
+		.icon :global(svg) {
+			width: 1.75rem;
+			height: 1.75rem;
+		}
+
+		.body {
+			flex-direction: column;
+			align-items: center;
+			gap: 0.3rem;
+			text-align: center;
+		}
+
+		h3 {
+			font-size: 0.85rem;
+		}
+
+		.body p {
+			max-width: 100%;
+			white-space: normal;
+			overflow: visible;
+			text-overflow: clip;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			font-size: 0.72rem;
+			max-height: 0;
+			opacity: 0;
+			transition:
+				max-height 0.18s ease,
+				opacity 0.18s ease;
+		}
+
+		.row:hover .body p,
+		.row:focus-visible .body p {
+			max-height: 2.6em;
+			opacity: 0.85;
+		}
+
+		.tag,
+		.arrow {
 			display: none;
 		}
 	}
