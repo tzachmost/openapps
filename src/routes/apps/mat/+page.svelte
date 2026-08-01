@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { samplePixels } from '$lib/swatch/palette';
 	import { formatBytes } from '$lib/format';
 	import {
@@ -171,6 +172,10 @@
 			flash('Clipboard blocked — use Download');
 		}
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) loadFile(handoffFile);
 </script>
 
 <svelte:window onpaste={onPaste} />

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { diffLines, wordDiff, type WordSpan } from '$lib/delta/text';
 	import { MAX_LINES, splitLines } from '$lib/delta/text';
 	import { buildRows, summarizeRows, type Row } from '$lib/delta/rows';
@@ -94,6 +95,11 @@
 		anchor.click();
 		URL.revokeObjectURL(url);
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop —
+	// lands in the "before" side, the natural default for a single file.
+	const handoffFile = takePendingFile();
+	if (handoffFile) loadFile(handoffFile, (text) => (leftInput = text));
 </script>
 
 {#snippet spans(items: WordSpan[], variant: 'removed' | 'added')}

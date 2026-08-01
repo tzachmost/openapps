@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { samplePixels, buildPalette, type RGB, type PaletteColor } from '$lib/swatch/palette';
 
 	type ImageItem = {
@@ -114,6 +115,10 @@
 		const lines = colors.map((color, i) => `\t--swatch-${i + 1}: ${color.hex};`);
 		return `:root {\n${lines.join('\n')}\n}`;
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) addFiles([handoffFile]);
 </script>
 
 <svelte:window onpaste={onPaste} />

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { renderMarkdown } from '$lib/folio/markdown';
 	import { buildStandaloneDocument } from '$lib/folio/document';
 	import { SAMPLE } from '$lib/folio/sample';
@@ -85,6 +86,10 @@
 	function printDocument() {
 		window.print();
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) loadFile(handoffFile);
 </script>
 
 <svelte:head>

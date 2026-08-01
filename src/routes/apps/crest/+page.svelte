@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { renderIcon, renderIconPng, opaqueFallback, type Background } from '$lib/crest/render';
 	import { buildCrestPackage, headSnippet } from '$lib/crest/package';
 	import { buildZip } from '$lib/crest/zip';
@@ -164,6 +165,10 @@
 			flash('Clipboard blocked');
 		}
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) loadFile(handoffFile);
 </script>
 
 <svelte:window onpaste={onPaste} />

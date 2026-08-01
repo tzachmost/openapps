@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import {
 		compressImage,
 		extensionFor,
@@ -183,6 +184,10 @@
 			await new Promise((resolve) => setTimeout(resolve, 200));
 		}
 	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop.
+	const handoffFile = takePendingFile();
+	if (handoffFile) addFiles([handoffFile]);
 </script>
 
 <svelte:window onpaste={onPaste} />

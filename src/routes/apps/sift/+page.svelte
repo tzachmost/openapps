@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { takePendingFile } from '$lib/fileHandoff';
 	import { SvelteSet } from 'svelte/reactivity';
 	import JsonNode from '$lib/components/JsonNode.svelte';
 	import { formatBytes } from '$lib/format';
@@ -142,6 +143,14 @@
 		collectContainerPaths(tree, '', paths);
 		collapsed.clear();
 		for (const path of paths) collapsed.add(path);
+	}
+
+	// Landing page's file-drop hub hands off a file here instead of asking for a second drop —
+	// always into Format mode, the natural landing spot for a single JSON file.
+	const handoffFile = takePendingFile();
+	if (handoffFile) {
+		mode = 'format';
+		loadFile(handoffFile, (text) => (formatInput = text));
 	}
 </script>
 
