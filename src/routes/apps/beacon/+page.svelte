@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { generateQr, type EcLevel } from '$lib/beacon/qr';
@@ -179,6 +180,8 @@
 			</div>
 		</div>
 	{/if}
+
+	<RelatedTools slug="beacon" />
 </div>
 
 <style>
@@ -384,5 +387,4 @@
 		flex-wrap: wrap;
 		gap: 0.5rem;
 	}
-
 </style>

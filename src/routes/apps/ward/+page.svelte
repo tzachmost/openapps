@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
@@ -204,6 +205,8 @@
 			</p>
 		</fieldset>
 	{/if}
+
+	<RelatedTools slug="ward" />
 </div>
 
 <style>

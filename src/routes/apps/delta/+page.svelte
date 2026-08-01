@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { takePendingFile } from '$lib/fileHandoff';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { diffLines, wordDiff, type WordSpan } from '$lib/delta/text';
@@ -323,6 +324,8 @@
 			</div>
 		{/if}
 	{/if}
+
+	<RelatedTools slug="delta" />
 </div>
 
 <style>

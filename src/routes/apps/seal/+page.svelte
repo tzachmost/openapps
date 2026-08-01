@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
 	import Dropzone from '$lib/components/Dropzone.svelte';
@@ -292,7 +293,11 @@
 								</div>
 
 								<div class="show-all">
-									<Button variant="ghost" size="small" onclick={() => (item.showAll = !item.showAll)}>
+									<Button
+										variant="ghost"
+										size="small"
+										onclick={() => (item.showAll = !item.showAll)}
+									>
 										{item.showAll ? 'Hide other formats' : 'Show MD5, SHA-1, SHA-384, SHA-512'}
 									</Button>
 								</div>
@@ -341,6 +346,8 @@
 			{/if}
 		</section>
 	{/if}
+
+	<RelatedTools slug="seal" />
 </div>
 
 <style>

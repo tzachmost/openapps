@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
@@ -817,6 +818,8 @@
 			</details>
 		</Panel>
 	{/if}
+
+	<RelatedTools slug="prism" />
 </div>
 
 <style>

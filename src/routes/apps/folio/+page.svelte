@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { renderMarkdown } from '$lib/folio/markdown';
@@ -160,6 +161,8 @@
 			</div>
 		</div>
 	</div>
+
+	<RelatedTools slug="folio" />
 </div>
 
 <style>

@@ -2,6 +2,7 @@
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { SvelteSet } from 'svelte/reactivity';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import JsonNode from '$lib/components/JsonNode.svelte';
@@ -370,6 +371,8 @@
 			{/if}
 		</section>
 	{/if}
+
+	<RelatedTools slug="sift" />
 </div>
 
 <style>

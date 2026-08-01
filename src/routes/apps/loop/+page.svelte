@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import Dropzone from '$lib/components/Dropzone.svelte';
@@ -339,12 +340,7 @@
 					{/if}
 				</div>
 
-				<Button
-					variant="primary"
-					style="width: 100%;"
-					disabled={!canGenerate}
-					onclick={generate}
-				>
+				<Button variant="primary" style="width: 100%;" disabled={!canGenerate} onclick={generate}>
 					{phase === 'sampling'
 						? `Sampling ${progressDone}/${progressTotal}…`
 						: phase === 'encoding'
@@ -370,6 +366,8 @@
 			<p class="error">{errorMessage}</p>
 		{/if}
 	{/if}
+
+	<RelatedTools slug="loop" />
 </div>
 
 <style>

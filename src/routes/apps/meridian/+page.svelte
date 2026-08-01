@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import RelatedTools from '$lib/components/RelatedTools.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
 	import { loadSavedZones, saveZones } from '$lib/meridian/storage';
@@ -203,8 +204,8 @@
 
 <div class="page">
 	<ToolHeader title="Meridian">
-		Add the places that matter, then drag across the day to see what time it is everywhere at once
-		— and where the daylight actually overlaps.
+		Add the places that matter, then drag across the day to see what time it is everywhere at once —
+		and where the daylight actually overlaps.
 	</ToolHeader>
 
 	{#if homeZone === ''}
@@ -340,6 +341,8 @@
 
 		<p class="notice" aria-live="polite">{notice ?? ''}</p>
 	{/if}
+
+	<RelatedTools slug="meridian" />
 </div>
 
 <style>
