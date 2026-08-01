@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { parseJpegMetadata, stripJpegMetadata, type MetadataField } from '$lib/bare/exif';
 	import { formatBytes } from '$lib/format';
@@ -21,8 +22,6 @@
 	};
 
 	let items = $state<PhotoItem[]>([]);
-	let dragActive = $state(false);
-	let fileInput: HTMLInputElement | undefined = $state();
 
 	const readyItems = $derived(items.filter((item) => item.status === 'ready'));
 	const dirtyItems = $derived(readyItems.filter((item) => item.metadataBytes > 0));
@@ -146,18 +145,6 @@
 		items = [];
 	}
 
-	function onDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-		if (event.dataTransfer?.files?.length) addFiles(event.dataTransfer.files);
-	}
-
-	function onFilePick(event: Event) {
-		const target = event.target as HTMLInputElement;
-		if (target.files?.length) addFiles(target.files);
-		target.value = '';
-	}
-
 	function onPaste(event: ClipboardEvent) {
 		const files = Array.from(event.clipboardData?.files ?? []);
 		if (files.length) addFiles(files);
@@ -185,34 +172,11 @@
 		no quality loss.
 	</ToolHeader>
 
-	<div
-		class="dropzone"
-		class:active={dragActive}
-		ondragover={(event) => {
-			event.preventDefault();
-			dragActive = true;
-		}}
-		ondragleave={() => (dragActive = false)}
-		ondrop={onDrop}
-		onclick={() => fileInput?.click()}
-		onkeydown={(event) => {
-			if (event.key === 'Enter' || event.key === ' ') fileInput?.click();
-		}}
-		role="button"
-		tabindex="0"
-	>
+	<Dropzone class="tool-dropzone" accept="image/jpeg" multiple onFiles={addFiles}>
 		<p>
 			<strong>Drop JPEGs here</strong> or click to browse — you can also paste from the clipboard.
 		</p>
-		<input
-			bind:this={fileInput}
-			type="file"
-			accept="image/jpeg"
-			multiple
-			class="visually-hidden"
-			onchange={onFilePick}
-		/>
-	</div>
+	</Dropzone>
 
 	{#if items.length > 0}
 		<section class="results">
@@ -332,27 +296,8 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.dropzone {
+	:global(.tool-dropzone) {
 		margin-top: 2rem;
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
-		padding: clamp(2rem, 6vw, 3rem) 1.5rem;
-		text-align: center;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone.active {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
-	}
-
-	.dropzone strong {
-		color: var(--text);
 	}
 
 	.results {

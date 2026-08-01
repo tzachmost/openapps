@@ -2,6 +2,7 @@
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { formatBytes } from '$lib/format';
 	import { captureFrames, computeFrameTimes, computeOutputSize } from '$lib/loop/capture';
@@ -15,8 +16,6 @@
 	const DEFAULT_CLIP_SECONDS = 4;
 
 	let videoEl: HTMLVideoElement | undefined = $state();
-	let fileInput: HTMLInputElement | undefined = $state();
-	let dragActive = $state(false);
 
 	let videoUrl = $state<string | null>(null);
 	let sourceName = $state('clip');
@@ -107,18 +106,9 @@
 		trimEnd = Math.min(duration, DEFAULT_CLIP_SECONDS);
 	}
 
-	function onDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-		const file = event.dataTransfer?.files?.[0];
+	function onDropFiles(files: FileList | File[]) {
+		const file = files[0];
 		if (file) loadFile(file);
-	}
-
-	function onFilePick(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const file = target.files?.[0];
-		if (file) loadFile(file);
-		target.value = '';
 	}
 
 	function markStart() {
@@ -239,32 +229,10 @@
 	</ToolHeader>
 
 	{#if !videoUrl}
-		<div
-			class="dropzone"
-			class:active={dragActive}
-			ondragover={(event) => {
-				event.preventDefault();
-				dragActive = true;
-			}}
-			ondragleave={() => (dragActive = false)}
-			ondrop={onDrop}
-			onclick={() => fileInput?.click()}
-			onkeydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') fileInput?.click();
-			}}
-			role="button"
-			tabindex="0"
-		>
+		<Dropzone accept="video/*" onFiles={onDropFiles} class="loop-dropzone">
 			<p><strong>Drop a video here</strong> or click to browse.</p>
 			<p class="hint">Any format your browser can play — MP4, WebM, MOV.</p>
-			<input
-				bind:this={fileInput}
-				type="file"
-				accept="video/*"
-				class="visually-hidden"
-				onchange={onFilePick}
-			/>
-		</div>
+		</Dropzone>
 		{#if errorMessage}
 			<p class="error">{errorMessage}</p>
 		{/if}
@@ -411,41 +379,13 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.dropzone {
+	:global(.loop-dropzone) {
 		margin-top: 2rem;
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
-		padding: clamp(2.5rem, 9vw, 5rem) 1.5rem;
-		text-align: center;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone.active {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
-	}
-
-	.dropzone strong {
-		color: var(--text);
 	}
 
 	.hint {
 		margin-top: 0.4rem;
 		font-size: 0.85rem;
-	}
-
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		overflow: hidden;
-		clip: rect(0 0 0 0);
-		white-space: nowrap;
 	}
 
 	.workspace {

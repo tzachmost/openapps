@@ -2,6 +2,7 @@
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import {
 		compressImage,
@@ -44,8 +45,6 @@
 	let format = $state<OutputFormat>('auto');
 	let quality = $state(0.8);
 	let maxDimension = $state(0);
-	let dragActive = $state(false);
-	let fileInput: HTMLInputElement | undefined = $state();
 
 	const qualityMatters = $derived(format !== 'image/png');
 	const doneItems = $derived(items.filter((item) => item.status === 'done'));
@@ -192,18 +191,6 @@
 		scheduleEstimate();
 	});
 
-	function onDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-		if (event.dataTransfer?.files?.length) addFiles(event.dataTransfer.files);
-	}
-
-	function onFilePick(event: Event) {
-		const target = event.target as HTMLInputElement;
-		if (target.files?.length) addFiles(target.files);
-		target.value = '';
-	}
-
 	function onPaste(event: ClipboardEvent) {
 		const files = Array.from(event.clipboardData?.files ?? []);
 		if (files.length) addFiles(files);
@@ -295,34 +282,11 @@
 		</label>
 	</section>
 
-	<div
-		class="dropzone"
-		class:active={dragActive}
-		ondragover={(event) => {
-			event.preventDefault();
-			dragActive = true;
-		}}
-		ondragleave={() => (dragActive = false)}
-		ondrop={onDrop}
-		onclick={() => fileInput?.click()}
-		onkeydown={(event) => {
-			if (event.key === 'Enter' || event.key === ' ') fileInput?.click();
-		}}
-		role="button"
-		tabindex="0"
-	>
+	<Dropzone accept="image/*" multiple onFiles={addFiles}>
 		<p>
 			<strong>Drop images here</strong> or click to browse — you can also paste from the clipboard.
 		</p>
-		<input
-			bind:this={fileInput}
-			type="file"
-			accept="image/*"
-			multiple
-			class="visually-hidden"
-			onchange={onFilePick}
-		/>
-	</div>
+	</Dropzone>
 
 	{#if items.length > 0}
 		<Panel class="estimate-panel">
@@ -480,28 +444,6 @@
 		border: 1px solid var(--border);
 		border-radius: 8px;
 		padding: 0.45rem 0.6rem;
-	}
-
-	.dropzone {
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
-		padding: clamp(2rem, 6vw, 3rem) 1.5rem;
-		text-align: center;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone.active {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
-	}
-
-	.dropzone strong {
-		color: var(--text);
 	}
 
 	:global(.estimate-panel) {
