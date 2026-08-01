@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { renderIcon, renderIconPng, opaqueFallback, type Background } from '$lib/crest/render';
 	import { buildCrestPackage, headSnippet } from '$lib/crest/package';
@@ -182,16 +184,11 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Crest</h1>
-		<p>
-			One image in, a full favicon set out. Drop in a logo or mark and Crest crops it square,
-			composites it over a background you choose, and packages every size a site actually needs —
-			ICO, PNGs, a web manifest, the <code>&lt;head&gt;</code> tags — into one ZIP.
-		</p>
-	</header>
+	<ToolHeader title="Crest">
+		One image in, a full favicon set out. Drop in a logo or mark and Crest crops it square,
+		composites it over a background you choose, and packages every size a site actually needs —
+		ICO, PNGs, a web manifest, the <code>&lt;head&gt;</code> tags — into one ZIP.
+	</ToolHeader>
 
 	{#if !bitmap}
 		<div
@@ -242,21 +239,20 @@
 			<div class="panel" aria-label="Settings">
 				<div class="panel-head">
 					<p class="file">{sourceName}</p>
-					<button class="ghost small" onclick={clearImage}>New image</button>
+					<Button variant="ghost" size="small" onclick={clearImage}>New image</Button>
 				</div>
 
 				<fieldset>
 					<legend>Background</legend>
-					<div class="segmented">
-						<label class:selected={backgroundKind === 'transparent'}>
-							<input type="radio" bind:group={backgroundKind} value="transparent" />
-							Transparent
-						</label>
-						<label class:selected={backgroundKind === 'solid'}>
-							<input type="radio" bind:group={backgroundKind} value="solid" />
-							Solid color
-						</label>
-					</div>
+					<Segmented
+						compact
+						label="Background"
+						bind:value={backgroundKind}
+						options={[
+							{ value: 'transparent', label: 'Transparent' },
+							{ value: 'solid', label: 'Solid color' }
+						]}
+					/>
 					{#if backgroundKind === 'solid'}
 						<label class="color-field">
 							<input type="color" bind:value={backgroundColor} />
@@ -337,10 +333,10 @@
 				</ul>
 			</div>
 			<div class="export-actions">
-				<button class="ghost" onclick={copySnippet}>{notice ?? 'Copy <head> snippet'}</button>
-				<button class="primary" onclick={downloadZip} disabled={building}>
+				<Button variant="ghost" onclick={copySnippet}>{notice ?? 'Copy <head> snippet'}</Button>
+				<Button variant="primary" onclick={downloadZip} disabled={building}>
 					{building ? 'Building…' : 'Download ZIP'}
-				</button>
+				</Button>
 			</div>
 		</div>
 	{/if}
@@ -351,35 +347,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
-		max-width: 42rem;
-	}
-
-	.intro code {
-		font-family: var(--font-mono);
-		font-size: 0.9em;
 	}
 
 	.error {
@@ -435,8 +402,8 @@
 		place-items: center;
 		min-height: 18rem;
 		padding: clamp(1rem, 3vw, 2rem);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		background: var(--bg-elevated);
 		transition: border-color 0.15s ease;
 	}
@@ -472,8 +439,8 @@
 		gap: 1.1rem;
 		padding: 1.1rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.panel-head {
@@ -504,47 +471,6 @@
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		color: var(--text-dim);
-	}
-
-	.segmented {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.3rem;
-	}
-
-	.segmented label {
-		font-size: 0.75rem;
-		padding: 0.35rem 0.6rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.segmented label:hover {
-		border-color: var(--border-strong);
-		color: var(--text);
-	}
-
-	.segmented label.selected {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
-		color: var(--text);
-	}
-
-	.segmented input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	.segmented label:focus-within {
-		outline: 2px solid var(--accent);
-		outline-offset: 2px;
 	}
 
 	.color-field {
@@ -664,8 +590,8 @@
 		gap: 0.75rem;
 		padding: 1.5rem 1rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.mockup-label {
@@ -752,8 +678,8 @@
 		gap: 1rem;
 		padding: 1rem 1.1rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.file-list .meta {
@@ -784,46 +710,4 @@
 		gap: 0.5rem;
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		font-size: 0.75rem;
-		padding: 0.35rem 0.7rem;
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover {
-		filter: brightness(1.05);
-	}
-
-	button.primary:disabled {
-		opacity: 0.6;
-		cursor: default;
-		filter: none;
-	}
 </style>

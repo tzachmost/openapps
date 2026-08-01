@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { samplePixels } from '$lib/swatch/palette';
 	import { formatBytes } from '$lib/format';
@@ -189,16 +191,11 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Mat</h1>
-		<p>
-			Screenshots look better with a little room around them. Drop one in, pick a background, and
-			Mat mounts it — padding, rounded corners, a soft shadow — and hands back a PNG. All of it
-			drawn on your device.
-		</p>
-	</header>
+	<ToolHeader title="Mat">
+		Screenshots look better with a little room around them. Drop one in, pick a background, and
+		Mat mounts it — padding, rounded corners, a soft shadow — and hands back a PNG. All of it
+		drawn on your device.
+	</ToolHeader>
 
 	{#if !bitmap}
 		<div
@@ -249,7 +246,7 @@
 			<div class="panel" aria-label="Settings">
 				<div class="panel-head">
 					<p class="file">{sourceName}</p>
-					<button class="ghost small" onclick={reset}>Reset</button>
+					<Button variant="ghost" size="small" onclick={reset}>Reset</Button>
 				</div>
 
 				<fieldset>
@@ -303,14 +300,12 @@
 
 				<fieldset>
 					<legend>Shape</legend>
-					<div class="segmented">
-						{#each RATIOS as ratio (ratio.id)}
-							<label class:selected={opts.ratio === ratio.id}>
-								<input type="radio" bind:group={opts.ratio} value={ratio.id} />
-								{ratio.label}
-							</label>
-						{/each}
-					</div>
+					<Segmented
+						compact
+						label="Shape"
+						bind:value={opts.ratio}
+						options={RATIOS.map((ratio) => ({ value: ratio.id, label: ratio.label }))}
+					/>
 					<p class="note">Mat only ever adds background to reach a shape — it never crops.</p>
 				</fieldset>
 
@@ -329,16 +324,15 @@
 								maxlength="80"
 								bind:value={opts.title}
 							/>
-							<div class="segmented">
-								<label class:selected={opts.frameTheme === 'light'}>
-									<input type="radio" bind:group={opts.frameTheme} value="light" />
-									Light
-								</label>
-								<label class:selected={opts.frameTheme === 'dark'}>
-									<input type="radio" bind:group={opts.frameTheme} value="dark" />
-									Dark
-								</label>
-							</div>
+							<Segmented
+								compact
+								label="Frame theme"
+								bind:value={opts.frameTheme}
+								options={[
+									{ value: 'light', label: 'Light' },
+									{ value: 'dark', label: 'Dark' }
+								]}
+							/>
 						</div>
 					{/if}
 					<label class="toggle" class:disabled={presetId === NONE_PRESET_ID}>
@@ -371,9 +365,9 @@
 						</label>
 					{/each}
 				</div>
-				<button class="ghost" onclick={copyToClipboard}>Copy</button>
-				<button class="primary" onclick={download}>Download PNG</button>
-				<button class="ghost" onclick={clearImage}>New image</button>
+				<Button variant="ghost" onclick={copyToClipboard}>Copy</Button>
+				<Button variant="primary" onclick={download}>Download PNG</Button>
+				<Button variant="ghost" onclick={clearImage}>New image</Button>
 			</div>
 		</div>
 
@@ -392,33 +386,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro {
-		max-width: 38rem;
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.55;
 	}
 
 	.dropzone {
@@ -468,8 +435,8 @@
 		place-items: center;
 		min-height: 18rem;
 		padding: clamp(1rem, 3vw, 2rem);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 		background: var(--bg-elevated);
 		transition: border-color 0.15s ease;
 	}
@@ -506,8 +473,8 @@
 		gap: 1.1rem;
 		padding: 1.1rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.panel-head {
@@ -652,31 +619,35 @@
 	.segmented {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.3rem;
+		gap: 0.4rem;
 	}
 
 	.segmented label {
-		font-size: 0.75rem;
-		padding: 0.35rem 0.6rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		padding: 0.35rem 0.65rem;
+		border: 2px solid var(--border-strong);
+		border-radius: 3px;
+		background: var(--bg-elevated);
 		cursor: pointer;
 		color: var(--text-dim);
 		transition:
-			border-color 0.15s ease,
-			color 0.15s ease,
-			background 0.15s ease;
+			border-color 0.12s ease,
+			color 0.12s ease,
+			background-color 0.12s ease;
 	}
 
 	.segmented label:hover {
-		border-color: var(--border-strong);
 		color: var(--text);
 	}
 
 	.segmented label.selected {
+		background: var(--accent);
 		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
-		color: var(--text);
+		color: var(--accent-text);
 	}
 
 	.segmented input {
@@ -745,8 +716,8 @@
 		margin-top: 1rem;
 		padding: 1rem 1.1rem;
 		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 16px;
+		border: 2px solid var(--border-strong);
+		border-radius: 4px;
 	}
 
 	.export-meta p {
@@ -767,46 +738,7 @@
 	}
 
 	.segmented.compact label {
-		font-family: var(--font-mono);
 		padding: 0.3rem 0.55rem;
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.3rem 0.65rem;
-		font-size: 0.75rem;
-		white-space: nowrap;
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover {
-		filter: brightness(1.05);
 	}
 
 	.notice {

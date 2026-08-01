@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { samplePixels, buildPalette, type RGB, type PaletteColor } from '$lib/swatch/palette';
 
@@ -132,15 +133,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Swatch</h1>
-		<p>
-			Drop in a photo and Swatch reads its dominant colors straight off the pixels — no AI, no
-			guessing, just median-cut quantization running on your device.
-		</p>
-	</header>
+	<ToolHeader title="Swatch">
+		Drop in a photo and Swatch reads its dominant colors straight off the pixels — no AI, no
+		guessing, just median-cut quantization running on your device.
+	</ToolHeader>
 
 	<section class="controls" aria-label="Palette settings">
 		<label>
@@ -182,7 +178,7 @@
 		<section class="results">
 			<div class="results-header">
 				<p>{displayItems.length} image{displayItems.length === 1 ? '' : 's'}</p>
-				<button class="ghost" onclick={clearAll}>Clear</button>
+				<Button variant="ghost" onclick={clearAll}>Clear</Button>
 			</div>
 
 			<ul>
@@ -202,12 +198,13 @@
 							</div>
 							<div class="row-actions">
 								{#if item.status === 'ready'}
-									<button
-										class="ghost small"
+									<Button
+										variant="ghost"
+										size="small"
 										onclick={() => copy(cssVariables(item.colors), `css:${item.id}`)}
 									>
 										{copiedKey === `css:${item.id}` ? 'Copied!' : 'Copy as CSS'}
-									</button>
+									</Button>
 								{/if}
 								<button class="icon-button" aria-label="Remove" onclick={() => removeItem(item.id)}
 									>×</button
@@ -244,29 +241,6 @@
 		max-width: 42rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
 	}
 
 	.controls {
@@ -330,27 +304,6 @@
 	.results-header p {
 		font-size: 0.9rem;
 		color: var(--text-dim);
-	}
-
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.ghost.small {
-		padding: 0.35rem 0.7rem;
-		white-space: nowrap;
 	}
 
 	ul {
