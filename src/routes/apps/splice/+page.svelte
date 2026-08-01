@@ -3,6 +3,7 @@
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Panel from '$lib/components/Panel.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { takePendingFile } from '$lib/fileHandoff';
 	import { formatBytes } from '$lib/format';
 	import {
@@ -22,8 +23,6 @@
 	let sourceName = $state('audio');
 	let sourceSize = $state(0);
 	let errorMessage = $state<string | null>(null);
-	let dragActive = $state(false);
-	let fileInput: HTMLInputElement | undefined = $state();
 	let stageEl: HTMLDivElement | undefined = $state();
 	let canvasEl: HTMLCanvasElement | undefined = $state();
 
@@ -164,18 +163,9 @@
 		}
 	}
 
-	function onDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-		const file = event.dataTransfer?.files?.[0];
+	function onDropFiles(files: FileList | File[]) {
+		const file = files[0];
 		if (file) loadFile(file);
-	}
-
-	function onFilePick(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const file = target.files?.[0];
-		if (file) loadFile(file);
-		target.value = '';
 	}
 
 	function fracFromEvent(event: PointerEvent): number {
@@ -356,32 +346,10 @@
 	</ToolHeader>
 
 	{#if !originalBuffer}
-		<div
-			class="dropzone"
-			class:active={dragActive}
-			ondragover={(event) => {
-				event.preventDefault();
-				dragActive = true;
-			}}
-			ondragleave={() => (dragActive = false)}
-			ondrop={onDrop}
-			onclick={() => fileInput?.click()}
-			onkeydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') fileInput?.click();
-			}}
-			role="button"
-			tabindex="0"
-		>
+		<Dropzone accept="audio/*" onFiles={onDropFiles} class="splice-dropzone">
 			<p><strong>Drop an audio file here</strong> or click to browse.</p>
 			<p class="hint">MP3, WAV, OGG, M4A — anything your browser can decode.</p>
-			<input
-				bind:this={fileInput}
-				type="file"
-				accept="audio/*"
-				class="visually-hidden"
-				onchange={onFilePick}
-			/>
-		</div>
+		</Dropzone>
 		{#if errorMessage}
 			<p class="error">{errorMessage}</p>
 		{/if}
@@ -507,27 +475,8 @@
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
 	}
 
-	.dropzone {
+	:global(.splice-dropzone) {
 		margin-top: 2rem;
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
-		padding: clamp(2.5rem, 9vw, 5rem) 1.5rem;
-		text-align: center;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone.active {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
-	}
-
-	.dropzone strong {
-		color: var(--text);
 	}
 
 	.hint {

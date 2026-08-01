@@ -2,6 +2,7 @@
 	import ToolHeader from '$lib/components/ToolHeader.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Segmented from '$lib/components/Segmented.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { formatBytes } from '$lib/format';
 	import { ALGORITHMS, hashBytes, parseExpectedHash, type Digests } from '$lib/seal/hash';
 
@@ -54,8 +55,6 @@
 
 	// --- Files mode ---
 	let items = $state<FileItem[]>([]);
-	let dragActive = $state(false);
-	let fileInput: HTMLInputElement | undefined = $state();
 
 	// Look the item back up by id rather than closing over an object reference — see Bare/
 	// Squish for why (the $state array hands out reactive proxies only after assignment).
@@ -104,18 +103,6 @@
 
 	function clearAll() {
 		items = [];
-	}
-
-	function onDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-		if (event.dataTransfer?.files?.length) addFiles(event.dataTransfer.files);
-	}
-
-	function onFilePick(event: Event) {
-		const target = event.target as HTMLInputElement;
-		if (target.files?.length) addFiles(target.files);
-		target.value = '';
 	}
 
 	// SHA-256 → ids of every ready item sharing it. A group of size 1 just means "unique".
@@ -251,31 +238,9 @@
 		</section>
 	{:else}
 		<section class="files-mode">
-			<div
-				class="dropzone"
-				class:active={dragActive}
-				ondragover={(event) => {
-					event.preventDefault();
-					dragActive = true;
-				}}
-				ondragleave={() => (dragActive = false)}
-				ondrop={onDrop}
-				onclick={() => fileInput?.click()}
-				onkeydown={(event) => {
-					if (event.key === 'Enter' || event.key === ' ') fileInput?.click();
-				}}
-				role="button"
-				tabindex="0"
-			>
+			<Dropzone multiple onFiles={addFiles}>
 				<p><strong>Drop any files here</strong> or click to browse.</p>
-				<input
-					bind:this={fileInput}
-					type="file"
-					multiple
-					class="visually-hidden"
-					onchange={onFilePick}
-				/>
-			</div>
+			</Dropzone>
 
 			{#if items.length > 0}
 				<div class="results-header">
@@ -530,28 +495,6 @@
 	.compare-result.unrecognized {
 		color: var(--text-dim);
 		font-weight: 400;
-	}
-
-	.dropzone {
-		border: 1.5px dashed var(--border-strong);
-		border-radius: 16px;
-		padding: clamp(2rem, 6vw, 3rem) 1.5rem;
-		text-align: center;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone.active {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, transparent);
-	}
-
-	.dropzone strong {
-		color: var(--text);
 	}
 
 	.results-header {
