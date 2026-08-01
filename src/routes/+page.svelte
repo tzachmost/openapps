@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AppCard from '$lib/components/AppCard.svelte';
+	import Dropzone from '$lib/components/Dropzone.svelte';
 	import { apps } from '$lib/apps';
 	import { matchToolsForFile, type FileMatch } from '$lib/fileRouting';
 	import { setPendingFile } from '$lib/fileHandoff';
@@ -36,8 +37,6 @@
 	});
 
 	// --- file-drop hub: detect a dropped file's type, show only the tools that accept it ---
-	let hubFileInput = $state<HTMLInputElement | null>(null);
-	let hubDragging = $state(false);
 	let hubFile = $state<File | null>(null);
 	let hubMatch = $state<FileMatch | null>(null);
 	let hubChecked = $state(false);
@@ -48,15 +47,8 @@
 		hubChecked = true;
 	}
 
-	function onHubDrop(event: DragEvent) {
-		event.preventDefault();
-		hubDragging = false;
-		const file = event.dataTransfer?.files?.[0];
-		if (file) handleFile(file);
-	}
-
-	function onHubPick(event: Event) {
-		const file = (event.currentTarget as HTMLInputElement).files?.[0];
+	function onHubFiles(files: FileList | File[]) {
+		const file = files[0];
 		if (file) handleFile(file);
 	}
 
@@ -84,33 +76,13 @@
 </section>
 
 <section class="hub" aria-label="Find a tool for a file">
-	<div
-		class="dropzone"
-		class:dragging={hubDragging}
-		ondragover={(e) => {
-			e.preventDefault();
-			hubDragging = true;
-		}}
-		ondragleave={() => (hubDragging = false)}
-		ondrop={onHubDrop}
-		onclick={() => hubFileInput?.click()}
-		onkeydown={(e) => {
-			if (e.key === 'Enter' || e.key === ' ') hubFileInput?.click();
-		}}
-		role="button"
-		tabindex="0"
-	>
-		<span class="corner corner-tl" aria-hidden="true"></span>
-		<span class="corner corner-tr" aria-hidden="true"></span>
-		<span class="corner corner-bl" aria-hidden="true"></span>
-		<span class="corner corner-br" aria-hidden="true"></span>
+	<Dropzone onFiles={onHubFiles}>
 		<span class="dropzone-title">Not sure which tool you need?</span>
 		<span class="dropzone-hint">
 			Drop a file here, or <span class="link">click to choose one</span> — we'll show you what applies.
 			Only its name and type are read, never its contents.
 		</span>
-		<input bind:this={hubFileInput} type="file" onchange={onHubPick} class="visually-hidden" />
-	</div>
+	</Dropzone>
 
 	{#if hubChecked}
 		<div class="hub-result">
@@ -208,70 +180,6 @@
 		max-width: 40rem;
 		margin: 0 auto clamp(2.5rem, 6vw, 3.5rem);
 		padding: 0 clamp(1.25rem, 4vw, 3rem);
-	}
-
-	.dropzone {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-		border: 2px solid var(--border-strong);
-		padding: clamp(1.5rem, 4vw, 2rem);
-		text-align: center;
-		cursor: pointer;
-		background: var(--bg-elevated);
-		transition:
-			border-color 0.12s ease,
-			box-shadow 0.12s ease,
-			transform 0.12s ease;
-	}
-
-	.dropzone:hover,
-	.dropzone:focus-visible {
-		box-shadow: var(--shadow-hard);
-		transform: translate(-2px, -2px);
-	}
-
-	.dropzone.dragging {
-		border-color: var(--accent);
-		box-shadow: var(--shadow-hard);
-		transform: translate(-2px, -2px);
-	}
-
-	.corner {
-		position: absolute;
-		width: 0.9rem;
-		height: 0.9rem;
-		border-color: var(--accent);
-		pointer-events: none;
-	}
-
-	.corner-tl {
-		top: -2px;
-		left: -2px;
-		border-top: 3px solid var(--accent);
-		border-left: 3px solid var(--accent);
-	}
-
-	.corner-tr {
-		top: -2px;
-		right: -2px;
-		border-top: 3px solid var(--accent);
-		border-right: 3px solid var(--accent);
-	}
-
-	.corner-bl {
-		bottom: -2px;
-		left: -2px;
-		border-bottom: 3px solid var(--accent);
-		border-left: 3px solid var(--accent);
-	}
-
-	.corner-br {
-		bottom: -2px;
-		right: -2px;
-		border-bottom: 3px solid var(--accent);
-		border-right: 3px solid var(--accent);
 	}
 
 	.dropzone-title {
