@@ -71,10 +71,10 @@ export function matchToolsForFile(file: File): FileMatch | null {
 	const mime = file.type;
 
 	if (JPEG_EXT.has(ext) || mime === 'image/jpeg') {
-		return { category: 'JPEG image', apps: bySlug(['bare', 'squish', 'swatch', 'mat', 'crest']) };
+		return { category: 'JPEG image', apps: bySlug(['darkroom']) };
 	}
 	if (IMAGE_EXT.has(ext) || mime.startsWith('image/')) {
-		return { category: 'Image', apps: bySlug(['squish', 'swatch', 'mat', 'crest']) };
+		return { category: 'Image', apps: bySlug(['darkroom']) };
 	}
 	if (JSON_EXT.has(ext) || mime === 'application/json') {
 		return { category: 'JSON', apps: bySlug(['sift', 'delta']) };

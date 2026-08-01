@@ -10,56 +10,18 @@ export type AppMeta = {
 
 export const apps: AppMeta[] = [
 	{
-		slug: 'squish',
-		name: 'Squish',
-		tagline: 'Shrink photos without leaving your browser.',
+		slug: 'darkroom',
+		name: 'Darkroom',
+		tagline: 'Compress, clean, frame, and export any image.',
 		description:
-			'Drag in a batch of images, pick a format and quality, and Squish resizes and compresses everything on your device. Nothing is ever uploaded.',
+			'One shared queue, five things to do with it: shrink and convert, strip hidden EXIF/GPS metadata, pull a color palette, mount a screenshot with a background and shadow, or package a full favicon set. Everything renders on your device, nothing is ever uploaded.',
 		tag: 'Images',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<path d="M4 21.5 11 14.5 16.5 20 21 15.5 28 22.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-			<circle cx="11.5" cy="11.5" r="2.25" stroke="currentColor" stroke-width="2"/>
-		</svg>`
-	},
-	{
-		slug: 'bare',
-		name: 'Bare',
-		tagline: 'See what a photo reveals, then strip it out.',
-		description:
-			'Every JPEG carries hidden metadata — camera model, timestamps, sometimes an exact GPS location. Bare shows you what is embedded, then removes it byte-for-byte with no re-encoding and no quality loss.',
-		tag: 'Images',
-		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<path d="M16 9.5c-2.6 0-4.6 2-4.6 4.5 0 3 4.6 8 4.6 8s4.6-5 4.6-8c0-2.5-2-4.5-4.6-4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-			<circle cx="16" cy="14" r="1.4" fill="currentColor"/>
-			<path d="M7 25 25 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-		</svg>`
-	},
-	{
-		slug: 'swatch',
-		name: 'Swatch',
-		tagline: 'Pull a color palette out of any image.',
-		description:
-			'Drop in a photo and Swatch reads its dominant colors straight off the pixels using median-cut quantization — hex, RGB, and HSL, one click to copy, no AI involved.',
-		tag: 'Color',
-		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<path d="M20.5 9.5 22.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-			<path d="M19 11 12 18v3h3l7-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-			<circle cx="11.5" cy="22.5" r="1.5" fill="currentColor"/>
-		</svg>`
-	},
-	{
-		slug: 'mat',
-		name: 'Mat',
-		tagline: 'Give a screenshot room to breathe.',
-		description:
-			'Mount a screenshot on a background with padding, rounded corners, and a soft shadow — or let Mat build a gradient out of the image’s own colors. Renders to PNG on your device.',
-		tag: 'Images',
-		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<rect x="10" y="10" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/>
+			<path d="M8 19.5 13 14.5 17 18.5 20.5 15 24 18.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+			<circle cx="13.5" cy="11.5" r="1.8" stroke="currentColor" stroke-width="1.6"/>
+			<path d="M9 24.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+			<circle cx="18" cy="24.5" r="1.6" fill="currentColor"/>
 		</svg>`
 	},
 	{
@@ -123,19 +85,6 @@ export const apps: AppMeta[] = [
 			<path d="M17.3 8 20 10 17.3 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M21 17v2a3 3 0 0 1-3 3h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M14.7 20 12 22 14.7 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-		</svg>`
-	},
-	{
-		slug: 'crest',
-		name: 'Crest',
-		tagline: 'One image in, a full favicon set out.',
-		description:
-			'Drop in a logo or mark and Crest crops it square, composites it over a background you choose, and packages every size a modern site needs — ICO, PNGs, a web manifest, the head tags — into one ZIP, hand-rolled and built entirely on your device.',
-		tag: 'Images',
-		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<path d="M16 9 21 11.2v4.3c0 3.7-2.3 6.5-5 7.5-2.7-1-5-3.8-5-7.5v-4.3L16 9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-			<path d="M13.4 16.3 15.3 18.2l3.3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>`
 	},
 	{
