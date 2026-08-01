@@ -45,7 +45,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste JSON to pretty-print, validate, and explore it as a collapsible tree with precise error locations — or switch to Diff to compare two versions structurally, key by key. No server round-trip.',
 		tag: 'Dev',
-		related: ['delta', 'claim'],
+		related: ['delta', 'claim', 'lex'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M13 9c-1.8 0-2.6.9-2.6 2.6v2c0 1-.4 1.4-1.4 1.4.9 0 1.4.4 1.4 1.4v2c0 1.7.8 2.6 2.6 2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -112,7 +112,7 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste or drop two versions of any text or code and Delta computes a real diff — Myers’ algorithm, not a naive comparison — with word-level highlights on changed lines, split or unified view, and an exportable .patch file. No JSON required, unlike Sift.',
 		tag: 'Dev',
-		related: ['sift', 'claim'],
+		related: ['sift', 'claim', 'lex'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<path d="M16 9.5 22 21.5H10L16 9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -183,11 +183,28 @@ export const apps: AppMeta[] = [
 		description:
 			'Paste a token to see its header and claims decoded, a plain-language expiry status, and a signature check against a secret or public key via the browser’s own Web Crypto — or switch to Encode to build and sign a fresh HS256/384/512 token. Nothing leaves your device.',
 		tag: 'Dev',
-		related: ['sift', 'delta'],
+		related: ['sift', 'delta', 'lex'],
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
 			<circle cx="13" cy="13" r="3.2" stroke="currentColor" stroke-width="1.8"/>
 			<path d="M15.5 15.5 23 23M19.3 19.3l2.1 2.1M22 16.6l2.1 2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
+	},
+	{
+		slug: 'lex',
+		name: 'Lex',
+		tagline: 'Test and build regular expressions, live.',
+		description:
+			'Write a pattern and see it match against your own text as you type — full and capture groups broken out per match, named groups, and a Replace mode with real $1/$<name> substitution. Runs on your browser’s own regex engine, nothing leaves your device.',
+		tag: 'Dev',
+		related: ['sift', 'delta', 'claim'],
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M12 9 9 23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			<path d="M23 9 20 23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			<circle cx="16" cy="11.2" r="1.1" fill="currentColor"/>
+			<circle cx="16" cy="16" r="1.6" fill="currentColor"/>
+			<circle cx="16" cy="20.8" r="1.1" fill="currentColor"/>
 		</svg>`
 	},
 	{

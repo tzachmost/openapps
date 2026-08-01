@@ -28,35 +28,50 @@ jobs:
     # successful auto-merge actually changed main.
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.guard.outputs.run }}
     steps:
-      - name: Skip if not 07:30 Europe/Warsaw
-        if: github.event_name == 'schedule'
+      # Reports its own step output rather than exiting non-zero, so the two
+      # schedule ticks that don't land on 07:30 local time show as a normal
+      # "skipped" run (downstream steps + the deploy job below gated on
+      # `steps.guard.outputs.run`) instead of a red X on the Actions tab.
+      - name: Check if this is 07:30 Europe/Warsaw
+        id: guard
         run: |
           now=$(TZ='Europe/Warsaw' date +%H:%M)
-          if [ "$now" != "07:30" ]; then
-            echo "Not 07:30 local time ($now), skipping."
-            exit 78
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$now" != "07:30" ]; then
+            echo "Not 07:30 local time ($now) — skipping the rest of this run."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/checkout@v4
+        if: steps.guard.outputs.run == 'true'
         with:
           # Pinned rather than left to default: on a workflow_run event the
           # default ref is the *triggering* run's head SHA — the PR branch, which
           # automerge has already deleted — not the merge commit we want to ship.
           ref: main
       - uses: actions/setup-node@v4
+        if: steps.guard.outputs.run == 'true'
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+        if: steps.guard.outputs.run == 'true'
       - run: npm run build # outputs static site to ./build via adapter-static
+        if: steps.guard.outputs.run == 'true'
         env:
           BASE_PATH: /openapps
       - uses: actions/configure-pages@v5
+        if: steps.guard.outputs.run == 'true'
       - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.run == 'true'
         with:
           path: build
   deploy:
     needs: build
+    if: needs.build.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
