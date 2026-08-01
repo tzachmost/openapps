@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Panel from '$lib/components/Panel.svelte';
 	import {
 		generatePassword,
 		generatePassphrase,
@@ -80,37 +83,36 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
+	<ToolHeader title="Ward">
+		Every character comes from <code>crypto.getRandomValues</code>, your browser's cryptographically
+		secure random number generator — never <code>Math.random</code>, which isn't built to resist
+		guessing. Nothing here is saved or sent anywhere; close the tab and it's gone.
+	</ToolHeader>
 
-	<header class="intro">
-		<h1>Ward</h1>
-		<p>
-			Every character comes from <code>crypto.getRandomValues</code>, your browser's
-			cryptographically secure random number generator — never <code>Math.random</code>, which isn't
-			built to resist guessing. Nothing here is saved or sent anywhere; close the tab and it's gone.
-		</p>
-	</header>
-
-	<div class="mode-toggle" role="group" aria-label="Mode">
-		<button class:active={mode === 'password'} onclick={() => (mode = 'password')}>Password</button>
-		<button class:active={mode === 'passphrase'} onclick={() => (mode = 'passphrase')}
-			>Passphrase</button
-		>
+	<div class="mode-row">
+		<Segmented
+			label="Mode"
+			bind:value={mode}
+			options={[
+				{ value: 'password', label: 'Password' },
+				{ value: 'passphrase', label: 'Passphrase' }
+			]}
+		/>
 	</div>
 
-	<div class="panel">
+	<Panel class="value-panel">
 		{#if result}
 			<output class="value">{result.value}</output>
 		{:else}
 			<p class="empty">Pick at least one character type below.</p>
 		{/if}
 		<div class="panel-actions">
-			<button class="ghost" onclick={regenerate}>New</button>
-			<button class="primary" disabled={!result} onclick={copyValue}>
+			<Button variant="ghost" onclick={regenerate}>New</Button>
+			<Button variant="primary" disabled={!result} onclick={copyValue}>
 				{copied ? 'Copied!' : 'Copy'}
-			</button>
+			</Button>
 		</div>
-	</div>
+	</Panel>
 
 	{#if result && strength && crackTime}
 		<div class="meter">
@@ -177,13 +179,13 @@
 			<legend>Words <em>{passphraseOpts.wordCount}</em></legend>
 			<input type="range" min="3" max="10" step="1" bind:value={passphraseOpts.wordCount} />
 
-			<div class="segmented">
-				{#each SEPARATORS as sep (sep.id)}
-					<label class:selected={passphraseOpts.separator === sep.id}>
-						<input type="radio" bind:group={passphraseOpts.separator} value={sep.id} />
-						{sep.label}
-					</label>
-				{/each}
+			<div class="separator-row">
+				<Segmented
+					compact
+					label="Separator"
+					bind:value={passphraseOpts.separator}
+					options={SEPARATORS.map((sep) => ({ value: sep.id, label: sep.label }))}
+				/>
 			</div>
 
 			<label class="toggle standalone">
@@ -226,74 +228,15 @@
 		}
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
-	.intro code {
-		font-family: var(--font-mono);
-		font-size: 0.85em;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 4px;
-		padding: 0.05em 0.35em;
-	}
-
-	.mode-toggle {
-		display: inline-flex;
-		gap: 0.25rem;
+	.mode-row {
 		margin-top: 1.5rem;
-		padding: 0.25rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
 	}
 
-	.mode-toggle button {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.4rem 1.1rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.mode-toggle button.active {
-		background: var(--accent);
-		color: var(--accent-text);
-	}
-
-	.panel {
+	:global(.value-panel) {
 		margin-top: 1.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		padding: 1.1rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 14px;
 	}
 
 	.value {
@@ -313,37 +256,6 @@
 	.panel-actions {
 		display: flex;
 		gap: 0.5rem;
-	}
-
-	button.ghost,
-	button.primary {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.5rem 1rem;
-		border-radius: 10px;
-		cursor: pointer;
-	}
-
-	button.ghost {
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.primary {
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-	}
-
-	button.primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 
 	.meter {
@@ -445,41 +357,8 @@
 		margin-top: 0.8rem;
 	}
 
-	.segmented {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.3rem;
+	.separator-row {
 		margin-top: 1rem;
-	}
-
-	.segmented label {
-		font-size: 0.75rem;
-		padding: 0.35rem 0.6rem;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		cursor: pointer;
-		color: var(--text-dim);
-		transition:
-			border-color 0.15s ease,
-			color 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.segmented label:hover {
-		border-color: var(--border-strong);
-		color: var(--text);
-	}
-
-	.segmented label.selected {
-		border-color: var(--accent);
-		color: var(--text);
-		background: var(--bg-elevated);
-	}
-
-	.segmented input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
 	}
 
 	.note {
