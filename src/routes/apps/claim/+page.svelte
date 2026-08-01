@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { SvelteSet } from 'svelte/reactivity';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import JsonNode from '$lib/components/JsonNode.svelte';
 	import { toPlainTree } from '$lib/sift/diff';
 	import { parseJson, type JsonValue } from '$lib/sift/json';
@@ -178,20 +180,21 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
+	<ToolHeader title="Claim">
+		Paste a token to decode its header and claims, see when it expires in plain language, and
+		verify its signature — or switch to Encode to build and sign a fresh one. Tokens and keys
+		never leave your browser; verification runs on the Web Crypto API already built into it.
+	</ToolHeader>
 
-	<header class="intro">
-		<h1>Claim</h1>
-		<p>
-			Paste a token to decode its header and claims, see when it expires in plain language, and
-			verify its signature — or switch to Encode to build and sign a fresh one. Tokens and keys
-			never leave your browser; verification runs on the Web Crypto API already built into it.
-		</p>
-	</header>
-
-	<div class="mode-toggle" role="group" aria-label="Mode">
-		<button class:active={mode === 'decode'} onclick={() => (mode = 'decode')}>Decode</button>
-		<button class:active={mode === 'encode'} onclick={() => (mode = 'encode')}>Encode</button>
+	<div class="mode-row">
+		<Segmented
+			label="Mode"
+			bind:value={mode}
+			options={[
+				{ value: 'decode', label: 'Decode' },
+				{ value: 'encode', label: 'Encode' }
+			]}
+		/>
 	</div>
 
 	{#if mode === 'decode'}
@@ -201,9 +204,9 @@
 					<span>Token</span>
 					<div class="panel-actions">
 						{#if token !== ''}
-							<button class="link" onclick={clearDecode}>Clear</button>
+							<Button variant="ghost" size="small" onclick={clearDecode}>Clear</Button>
 						{/if}
-						<button class="link" onclick={loadSample}>Load sample</button>
+						<Button variant="ghost" size="small" onclick={loadSample}>Load sample</Button>
 					</div>
 				</div>
 				<textarea
@@ -257,13 +260,14 @@
 					<div class="panel">
 						<div class="panel-header">
 							<span>Header</span>
-							<button
-								class="link"
+							<Button
+								variant="ghost"
+								size="small"
 								onclick={() =>
 									parsed?.ok && copyText('header', JSON.stringify(parsed.value.header, null, 2))}
 							>
 								{copiedKey === 'header' ? 'Copied!' : 'Copy'}
-							</button>
+							</Button>
 						</div>
 						<div class="tree-panel">
 							{#if headerTree}
@@ -274,13 +278,14 @@
 					<div class="panel">
 						<div class="panel-header">
 							<span>Payload</span>
-							<button
-								class="link"
+							<Button
+								variant="ghost"
+								size="small"
 								onclick={() =>
 									parsed?.ok && copyText('payload', JSON.stringify(parsed.value.payload, null, 2))}
 							>
 								{copiedKey === 'payload' ? 'Copied!' : 'Copy'}
-							</button>
+							</Button>
 						</div>
 						<div class="tree-panel">
 							{#if payloadTree}
@@ -308,13 +313,14 @@
 							placeholder="your-256-bit-secret"
 						/>
 						<div class="verify-actions">
-							<button
-								class="primary small"
+							<Button
+								variant="primary"
+								size="small"
 								disabled={keyInput === '' || verifying}
 								onclick={runVerify}
 							>
 								{verifying ? 'Verifying…' : 'Verify signature'}
-							</button>
+							</Button>
 						</div>
 					{:else if family === 'rsa' || family === 'ecdsa'}
 						<label for="key-input">Public key (PEM, SPKI format)</label>
@@ -325,13 +331,14 @@
 							placeholder="-----BEGIN PUBLIC KEY-----&#10;...&#10;-----END PUBLIC KEY-----"
 						></textarea>
 						<div class="verify-actions">
-							<button
-								class="primary small"
+							<Button
+								variant="primary"
+								size="small"
 								disabled={keyInput.trim() === '' || verifying}
 								onclick={runVerify}
 							>
 								{verifying ? 'Verifying…' : 'Verify signature'}
-							</button>
+							</Button>
 						</div>
 					{:else}
 						<p class="hint">"{alg}" isn't a signature algorithm Claim verifies yet.</p>
@@ -361,10 +368,10 @@
 			<div class="panel">
 				<div class="panel-header">
 					<span>Header</span>
-					<div class="panel-actions segmented" role="group" aria-label="Algorithm">
-						<button onclick={() => setAlg('HS256')}>HS256</button>
-						<button onclick={() => setAlg('HS384')}>HS384</button>
-						<button onclick={() => setAlg('HS512')}>HS512</button>
+					<div class="panel-actions">
+						<Button size="small" onclick={() => setAlg('HS256')}>HS256</Button>
+						<Button size="small" onclick={() => setAlg('HS384')}>HS384</Button>
+						<Button size="small" onclick={() => setAlg('HS512')}>HS512</Button>
 					</div>
 				</div>
 				<textarea bind:value={encHeaderText} spellcheck="false"></textarea>
@@ -373,7 +380,9 @@
 			<div class="panel">
 				<div class="panel-header">
 					<span>Payload</span>
-					<button class="link" onclick={insertNowClaims}>Insert iat / exp (now, +1h)</button>
+					<Button variant="ghost" size="small" onclick={insertNowClaims}>
+						Insert iat / exp (now, +1h)
+					</Button>
 				</div>
 				<textarea bind:value={encPayloadText} spellcheck="false"></textarea>
 			</div>
@@ -388,9 +397,9 @@
 					placeholder="your-256-bit-secret"
 				/>
 				<div class="verify-actions">
-					<button class="primary small" disabled={encSigning} onclick={sign}>
+					<Button variant="primary" size="small" disabled={encSigning} onclick={sign}>
 						{encSigning ? 'Signing…' : 'Sign & generate'}
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -403,13 +412,14 @@
 					<div class="panel-header">
 						<span>Token</span>
 						<div class="panel-actions">
-							<button
-								class="link"
+							<Button
+								variant="ghost"
+								size="small"
 								onclick={() => encResult?.ok && copyText('token', encResult.token)}
 							>
 								{copiedKey === 'token' ? 'Copied!' : 'Copy'}
-							</button>
-							<button class="link" onclick={decodeGenerated}>Decode this →</button>
+							</Button>
+							<Button variant="ghost" size="small" onclick={decodeGenerated}>Decode this →</Button>
 						</div>
 					</div>
 					<textarea readonly value={encResult.token}></textarea>
@@ -435,55 +445,8 @@
 		}
 	}
 
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		max-width: 42rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-	}
-
-	.mode-toggle {
-		display: inline-flex;
-		gap: 0.25rem;
+	.mode-row {
 		margin-top: 1.5rem;
-		padding: 0.25rem;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 999px;
-	}
-
-	.mode-toggle button {
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.4rem 1.1rem;
-		border: none;
-		border-radius: 999px;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.mode-toggle button.active {
-		background: var(--accent);
-		color: var(--accent-text);
 	}
 
 	.decode,
@@ -712,69 +675,6 @@
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-	}
-
-	.segmented {
-		display: flex;
-		border: 1px solid var(--border);
-		border-radius: 999px;
-		overflow: hidden;
-	}
-
-	.segmented button {
-		font: inherit;
-		font-size: 0.72rem;
-		padding: 0.3rem 0.6rem;
-		border: none;
-		background: transparent;
-		color: var(--text-dim);
-		cursor: pointer;
-	}
-
-	.segmented button:hover {
-		color: var(--text);
-	}
-
-	button.link {
-		font: inherit;
-		font-size: 0.8rem;
-		background: none;
-		border: none;
-		padding: 0;
-		color: var(--text-dim);
-		text-decoration: underline;
-		text-underline-offset: 2px;
-		cursor: pointer;
-	}
-
-	button.link:hover {
-		color: var(--text);
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.85rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.6rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary.small {
-		padding: 0.5rem 0.9rem;
-		font-size: 0.8rem;
-	}
-
-	button.primary:hover:not(:disabled) {
-		filter: brightness(1.05);
-	}
-
-	button.primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 
 	@media (max-width: 42rem) {

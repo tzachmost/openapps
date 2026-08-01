@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ToolHeader from '$lib/components/ToolHeader.svelte';
+	import Segmented from '$lib/components/Segmented.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { generateQr, type EcLevel } from '$lib/beacon/qr';
 	import {
 		renderToCanvas,
@@ -92,15 +94,10 @@
 </svelte:head>
 
 <div class="page">
-	<a class="back" href={resolve('/')}>← all tools</a>
-
-	<header class="intro">
-		<h1>Beacon</h1>
-		<p>
-			Type a URL or any text and Beacon builds a QR code for it — Reed–Solomon error correction and
-			all, hand-rolled, no dependency. Export a crisp PNG or a scale-free SVG.
-		</p>
-	</header>
+	<ToolHeader title="Beacon">
+		Type a URL or any text and Beacon builds a QR code for it — Reed–Solomon error correction and
+		all, hand-rolled, no dependency. Export a crisp PNG or a scale-free SVG.
+	</ToolHeader>
 
 	<div class="workspace">
 		<div class="stage">
@@ -125,14 +122,12 @@
 
 			<fieldset>
 				<legend>Error correction</legend>
-				<div class="segmented">
-					{#each EC_LEVELS as level (level.id)}
-						<label class:selected={ecLevel === level.id} title={level.note}>
-							<input type="radio" bind:group={ecLevel} value={level.id} />
-							{level.label}
-						</label>
-					{/each}
-				</div>
+				<Segmented
+					compact
+					label="Error correction"
+					bind:value={ecLevel}
+					options={EC_LEVELS.map((level) => ({ value: level.id, label: level.label }))}
+				/>
 				<p class="note">{EC_LEVELS.find((l) => l.id === ecLevel)?.note}</p>
 			</fieldset>
 
@@ -178,9 +173,9 @@
 					scale}×{(result.size + DEFAULT_QUIET_ZONE * 2) * scale}px
 			</p>
 			<div class="export-actions">
-				<button class="ghost" onclick={copyPng}>{notice ?? 'Copy PNG'}</button>
-				<button class="ghost" onclick={downloadSvg}>Download SVG</button>
-				<button class="primary" onclick={downloadPng}>Download PNG</button>
+				<Button variant="ghost" onclick={copyPng}>{notice ?? 'Copy PNG'}</Button>
+				<Button variant="ghost" onclick={downloadSvg}>Download SVG</Button>
+				<Button variant="primary" onclick={downloadPng}>Download PNG</Button>
 			</div>
 		</div>
 	{/if}
@@ -191,30 +186,6 @@
 		max-width: 62rem;
 		margin: 0 auto;
 		padding: 0 clamp(1.25rem, 4vw, 3rem) 4rem;
-	}
-
-	.back {
-		display: inline-block;
-		margin-bottom: 1.5rem;
-		font-size: 0.85rem;
-		color: var(--text-dim);
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: var(--text);
-	}
-
-	.intro h1 {
-		font-size: clamp(1.8rem, 4vw, 2.3rem);
-		letter-spacing: -0.02em;
-	}
-
-	.intro p {
-		margin-top: 0.5rem;
-		color: var(--text-dim);
-		line-height: 1.5;
-		max-width: 42rem;
 	}
 
 	.workspace {
@@ -414,35 +385,4 @@
 		gap: 0.5rem;
 	}
 
-	button.ghost {
-		font: inherit;
-		font-size: 0.8rem;
-		background: transparent;
-		border: 1px solid var(--border);
-		color: var(--text);
-		border-radius: 999px;
-		padding: 0.45rem 0.9rem;
-		cursor: pointer;
-		transition: border-color 0.15s ease;
-	}
-
-	button.ghost:hover {
-		border-color: var(--border-strong);
-	}
-
-	button.primary {
-		font: inherit;
-		font-size: 0.8rem;
-		background: var(--accent);
-		border: 1px solid var(--accent);
-		color: var(--accent-text);
-		border-radius: 999px;
-		padding: 0.45rem 1rem;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	button.primary:hover {
-		filter: brightness(1.05);
-	}
 </style>
