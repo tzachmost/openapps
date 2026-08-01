@@ -114,17 +114,17 @@ export const apps: AppMeta[] = [
 		</svg>`
 	},
 	{
-		slug: 'bloom',
-		name: 'Bloom',
-		tagline: 'Drag a few orbs into a soft gradient.',
+		slug: 'prism',
+		name: 'Prism',
+		tagline: 'Pick a color, or blur a few into a gradient.',
 		description:
-			'Pick a palette, drag its colored orbs into place, and Bloom blurs them into a soft mesh gradient with a little film grain over the top. Export a PNG at wallpaper resolution or copy an approximate CSS background — all rendered on your device.',
+			'Pick a color to see it in hex, RGB, HSL, HSV, and OKLCH at once, generate a matching harmony, check its WCAG contrast, and preview it under color vision deficiencies — or switch to Gradient and drag colored orbs into a soft, grainy mesh gradient, exported as a PNG or approximate CSS. Hand-rolled OKLab math and colorblindness matrices, all on your device.',
 		tag: 'Color',
 		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<circle cx="13" cy="13.5" r="4.2" stroke="currentColor" stroke-width="1.8"/>
-			<circle cx="20.5" cy="15" r="3.6" stroke="currentColor" stroke-width="1.8"/>
-			<circle cx="15.5" cy="20.5" r="3.6" stroke="currentColor" stroke-width="1.8"/>
+			<path d="M16 8 22.5 20H9.5L16 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+			<path d="M16 20v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+			<path d="M12.5 24.5h-2M17 24.5h2M21.5 24.5h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
 		</svg>`
 	},
 	{
@@ -194,19 +194,6 @@ export const apps: AppMeta[] = [
 			<rect x="10" y="15.5" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/>
 			<circle cx="16" cy="19" r="1.3" fill="currentColor"/>
 			<path d="M16 20.1v1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-		</svg>`
-	},
-	{
-		slug: 'hue',
-		name: 'Hue',
-		tagline: 'Pick a color, get everything about it.',
-		description:
-			'Pick a color to see it in hex, RGB, HSL, HSV, and OKLCH at once, generate a matching harmony, check its WCAG contrast, and preview it under color vision deficiencies — hand-rolled OKLab math and colorblindness matrices, all on your device.',
-		tag: 'Color',
-		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
-			<circle cx="16" cy="16" r="7" stroke="currentColor" stroke-width="1.8"/>
-			<path d="M16 9V16M16 16 10.9 19.5M16 16 21.1 19.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
 		</svg>`
 	}
 ];
