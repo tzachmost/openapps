@@ -238,5 +238,19 @@ export const apps: AppMeta[] = [
 			<circle cx="16" cy="19" r="1.3" fill="currentColor"/>
 			<path d="M16 20.1v1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
 		</svg>`
+	},
+	{
+		slug: 'convert',
+		name: 'Convert',
+		tagline: 'Length, weight, temperature, and more — live, in one list.',
+		description:
+			'Type a value in any unit and every other unit in the category updates instantly — length, weight, temperature, area, volume, speed, time, and data storage, with decimal and binary data prefixes kept honestly separate. No "from"/"to" pickers, exact standard factors throughout.',
+		tag: 'Utility',
+		related: [],
+		icon: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4" y="4" width="24" height="24" rx="5" stroke="currentColor" stroke-width="2"/>
+			<path d="M8 12.5h15M23 12.5 19 8.5M23 12.5 19 16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M24 19.5H9M13 15.5 9 19.5M13 23.5 9 19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>`
 	}
 ];
